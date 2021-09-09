@@ -83,7 +83,9 @@ function getChangelogForTag(tag) {
   console.log('msgsByCommit:', msgsByCommit)
 
   return hashes.reduce(function(memo, hash) {
-    msgsByCommit[hash].map(msg => memo.push(msg))
+    if (msgsByCommit.hasOwnProperty(hash)) {
+      msgsByCommit[hash].map(msg => memo.push(msg))
+    }
     return memo
   }, [])
 }
