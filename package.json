@@ -1,0 +1,48 @@
+{
+  "name": "node-releaser",
+  "version": "0.1.0",
+  "description": "Automated semantic and calendar versioning tool with plugin support.",
+  "main": "src/index.js",
+  "bin": {
+    "releaser": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muratgozel/node-releaser.git"
+  },
+  "keywords": [
+    "semver",
+    "calvar",
+    "git",
+    "github",
+    "gitlab",
+    "versioning",
+    "release",
+    "tool"
+  ],
+  "author": {
+    "name": "Murat Gözel",
+    "email": "murat@gozel.com.tr",
+    "url": "https://gozel.com.tr"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/muratgozel"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muratgozel/node-releaser/issues"
+  },
+  "homepage": "https://github.com/muratgozel/node-releaser#readme",
+  "dependencies": {
+    "calver": "^21.1.5",
+    "colors": "^1.4.0",
+    "convict": "^5.2.1",
+    "octokit": "^1.5.0",
+    "semver": "^7.3.5",
+    "yargs": "^17.1.1"
+  }
+}
