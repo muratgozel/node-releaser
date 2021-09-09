@@ -67,6 +67,8 @@ function getChangelogForTag(tag) {
     return []
   }
 
+  console.log('hashes:', hashes)
+
   // get commit messages including multiline
   const revrange = [hashes[hashes.length-1], hashes[0]]
   const output2 = execSync(`git log ${revrange[0]}..${revrange[1]} --format="%H %s%n%b"`)
@@ -77,6 +79,8 @@ function getChangelogForTag(tag) {
     memo[item.slice(0, hashes[0].length)] = item.slice(hashes[0].length + 1).split(/[\n\r]/)
     return memo
   }, {})
+
+  console.log('msgsByCommit:', msgsByCommit)
 
   return hashes.reduce(function(memo, hash) {
     msgsByCommit[hash].map(msg => memo.push(msg))

@@ -3,7 +3,7 @@
     "scheme": "semver"
   },
   "npm": {
-    "enable": true,
+    "enable": false,
     "updatePkgJson": true
   }
 }
