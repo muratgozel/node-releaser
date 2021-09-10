@@ -23,7 +23,7 @@ module.exports = async function createReleaseByLevel(level, ctx) {
   git.push(nextTag, messages)
   const changelog = git.getChangelogForTag(nextTag)
 
-  await plugins.call('afterPush', nextTag)
+  await plugins.call('afterPush', nextTag, changelog)
 
   console.log(colors.green(`Release successful. (${nextTag})`))
 }

@@ -124,7 +124,7 @@ function myplugin() {
     // triggered when the next version computed
   }
 
-  async function afterPush(tag) {
+  async function afterPush(tag, changelog) {
     // triggered when after git push
   }
 
