@@ -19,7 +19,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('major', argv)
+      await lib.createReleaseByLevelCLI('major', argv)
     }
   )
   .command(
@@ -29,7 +29,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('minor', argv)
+      await lib.createReleaseByLevelCLI('minor', argv)
     }
   )
   .command(
@@ -39,7 +39,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('patch', argv)
+      await lib.createReleaseByLevelCLI('patch', argv)
     }
   )
   .command(
@@ -49,7 +49,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('premajor', argv)
+      await lib.createReleaseByLevelCLI('premajor', argv)
     }
   )
   .command(
@@ -59,7 +59,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('preminor', argv)
+      await lib.createReleaseByLevelCLI('preminor', argv)
     }
   )
   .command(
@@ -69,7 +69,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('prepatch', argv)
+      await lib.createReleaseByLevelCLI('prepatch', argv)
     }
   )
   .command(
@@ -79,7 +79,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('prerelease', argv)
+      await lib.createReleaseByLevelCLI('prerelease', argv)
     }
   )
   .command(
@@ -89,7 +89,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar', argv)
+      await lib.createReleaseByLevelCLI('calendar', argv)
     }
   )
   .command(
@@ -99,7 +99,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('micro', argv)
+      await lib.createReleaseByLevelCLI('micro', argv)
     }
   )
   .command(
@@ -109,7 +109,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('dev', argv)
+      await lib.createReleaseByLevelCLI('dev', argv)
     }
   )
   .command(
@@ -119,7 +119,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('alpha', argv)
+      await lib.createReleaseByLevelCLI('alpha', argv)
     }
   )
   .command(
@@ -129,7 +129,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('beta', argv)
+      await lib.createReleaseByLevelCLI('beta', argv)
     }
   )
   .command(
@@ -139,7 +139,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('rc', argv)
+      await lib.createReleaseByLevelCLI('rc', argv)
     }
   )
   .command(
@@ -149,7 +149,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar.major', argv)
+      await lib.createReleaseByLevelCLI('calendar.major', argv)
     }
   )
   .command(
@@ -159,7 +159,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar.minor', argv)
+      await lib.createReleaseByLevelCLI('calendar.minor', argv)
     }
   )
   .command(
@@ -169,7 +169,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar.micro', argv)
+      await lib.createReleaseByLevelCLI('calendar.micro', argv)
     }
   )
   .command(
@@ -179,7 +179,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar.dev', argv)
+      await lib.createReleaseByLevelCLI('calendar.dev', argv)
     }
   )
   .command(
@@ -189,7 +189,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar.alpha', argv)
+      await lib.createReleaseByLevelCLI('calendar.alpha', argv)
     }
   )
   .command(
@@ -199,7 +199,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar.beta', argv)
+      await lib.createReleaseByLevelCLI('calendar.beta', argv)
     }
   )
   .command(
@@ -209,7 +209,7 @@ yargs
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
-      lib.createReleaseByLevelCLI('calendar.rc', argv)
+      await lib.createReleaseByLevelCLI('calendar.rc', argv)
     }
   )
   .help()

@@ -5,19 +5,25 @@ module.exports = async function createReleaseByLevel(level, ctx) {
 
   git.verifyCodebase()
 
-  const scheme = config.get('versioning.scheme')
-  const calverFormat = config.get('versioning.format')
-  const currentTag = git.getLatestTag()
-  const nextTag = versioning.generateNextTag(level, currentTag, scheme, calverFormat)
+  plugins.registerDefaultPlugins(config)
+  plugins.registerUserPlugins(config)
+  await plugins.call('initiated')
 
-  plugins.call('beforePush', nextTag)
+  const scheme = config.get('versioning.scheme')
+  const format = config.get('versioning.format')
+  const currentTag = git.getLatestTag()
+  const currentTagBare = plugins.getContext().getBareVersion(currentTag)
+  const nextTagBare = versioning.generateNextTag(level, currentTagBare, scheme, format)
+  const nextTag = plugins.getContext().prefixTag(nextTagBare)
+
+  await plugins.call('beforePush', nextTag)
 
   console.log(colors.blue(`Releasing new version ${nextTag}`))
 
   git.push(nextTag, messages)
   const changelog = git.getChangelogForTag(nextTag)
 
-  plugins.call('afterPush', config, nextTag)
+  await plugins.call('afterPush', nextTag)
 
   console.log(colors.green(`Release successful. (${nextTag})`))
 }

@@ -1,4 +1,5 @@
 const { Octokit, App, Action } = require('octokit')
+const colors = require('colors/safe')
 
 function github() {
   const store = {
@@ -7,29 +8,35 @@ function github() {
     repo: null
   }
 
-  function initiated(config, git) {
+  async function initiated() {
     store.octokit = new Octokit({
-      auth: config.get('github.token'),
-      userAgent: config.get('releaser.name') + '/' + config.get('releaser.version')
+      auth: this.config.get('github.token'),
+      userAgent: this.config.get('releaser.name') + '/' + this.config.get('releaser.version')
     })
 
-    const remote = git.getRemoteOrigin()
+    const remote = this.git.getRemoteOrigin()
     store.owner = remote.owner
     store.repo = remote.repo
   }
 
-  function beforePush(nextTag) {
+  async function beforePush(nextTag) {
 
   }
 
-  function afterPush(config, tag) {
-    if (!config.get('github.release')) return
+  async function afterPush(tag) {
+    if (!this.config.get('github.release')) return
 
-    store.octokit.request('POST /repos/{owner}/{repo}/releases', {
+    const resp = await store.octokit.request('POST /repos/{owner}/{repo}/releases', {
       owner: store.owner,
       repo: store.repo,
       tag_name: tag
     })
+    if (resp.status == 201) {
+      console.log(colors.green(`Github release created successfully.`))
+    }
+    else {
+      console.log(resp.data)
+    }
   }
 
   return {

@@ -34,6 +34,13 @@ module.exports = {
       default: '',
       env: 'RELEASER_VERSIONING_FORMAT',
       arg: 'versioning-format'
+    },
+    prefix: {
+      doc: 'Tag prefix.',
+      format: String,
+      default: 'v',
+      env: 'RELEASER_VERSIONING_PREFIX',
+      arg: 'versioning-prefix'
     }
   },
   npm: {
@@ -80,6 +87,38 @@ module.exports = {
       default: '',
       env: 'RELEASER_GITHUB_TOKEN',
       arg: 'github-token'
+    }
+  },
+  docker: {
+    enable: {
+      doc: 'Enables docker plugin.',
+      format: Boolean,
+      default: false,
+      env: 'RELEASER_DOCKER_ENABLE',
+      arg: 'docker-enable'
+    },
+    user: {
+      doc: 'Docker hub user name.',
+      format: String,
+      default: '',
+      env: 'RELEASER_DOCKER_USER',
+      arg: 'docker-user'
+    },
+    repo: {
+      doc: 'The name of the repo on docker hub.',
+      format: String,
+      default: '',
+      env: 'RELEASER_DOCKER_REPO',
+      arg: 'docker-repo'
+    },
+    build: {
+      path: {
+        doc: 'Docker build context.',
+        format: String,
+        default: '.',
+        env: 'RELEASER_DOCKER_BUILD_PATH',
+        arg: 'docker-build-path'
+      }
     }
   }
 }

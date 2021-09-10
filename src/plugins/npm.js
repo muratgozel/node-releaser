@@ -8,21 +8,21 @@ function npm() {
     obj: null
   }
 
-  function initiated(config) {
-    if (!config.get('npm.updatePkgJson')) return
+  async function initiated() {
+    if (!this.config.get('npm.updatePkgJson')) return
 
-    store.filepath = path.join(config.get('project.path'), 'package.json')
+    store.filepath = path.join(this.config.get('project.path'), 'package.json')
     if (fs.existsSync(store.filepath)) {
       store.obj = JSON.parse( fs.readFileSync(store.filepath, 'utf8') )
     }
   }
 
-  function beforePush(nextTag) {
-    updatePkgJson('version', nextTag)
+  async function beforePush(nextTag) {
+    updatePkgJson('version', this.getBareVersion(nextTag))
   }
 
-  function afterPush(config) {
-    if (!config.get('npm.publish')) return
+  async function afterPush() {
+    if (!this.config.get('npm.publish')) return
 
     try {
       execSync('npm publish --access public', {stdio: 'inherit', encoding: 'utf8'})

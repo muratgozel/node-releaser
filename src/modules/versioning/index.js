@@ -17,5 +17,5 @@ function generateNextTag(level, currentTag, scheme, calverFormat) {
 }
 
 module.exports = {
-  generateNextTag: generateNextTag
+  generateNextTag
 }

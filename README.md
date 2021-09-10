@@ -13,8 +13,9 @@ Automated semantic and calendar versioning tool with plugin support.
 1. Based on git.
 2. Powerful configuration management. (thanks to [convict](https://github.com/mozilla/node-convict/tree/master/packages/convict))
 3. Supports both [semver](https://github.com/npm/node-semver) and [calver](https://github.com/muratgozel/node-calver) while versioning.
-4. Generates changelog based on git commit messages.
-5. npm, github and gitlab plugins. See configuration reference below.
+4. Supports prefixing version numbers.
+5. Generates changelog based on git commit messages.
+6. npm, github and gitlab plugins. See configuration reference below.
 
 ## Install
 As a cli tool, it is recommended to install it globally:
@@ -115,15 +116,15 @@ RELEASER_GITHUB_TOKEN=token releaser patch "something." --github-enable --github
 A template for the plugin:
 ```js
 function myplugin() {
-  function initiated(config, git) {
+  async function initiated() {
     // triggered when config is ready
   }
 
-  function beforePush(nextTag) {
+  async function beforePush(nextTag) {
     // triggered when the next version computed
   }
 
-  function afterPush(config, tag) {
+  async function afterPush(tag) {
     // triggered when after git push
   }
 
@@ -136,6 +137,21 @@ function myplugin() {
 
 module.exports = myplugin()
 ```
+This is a minimal setup. All methods have the same special context which is available with `this`:
+```js
+async function beforePush(nextTag) {
+  // triggered when the next version computed
+
+  // context:
+  console.log(
+    this.config,
+    this.git,
+    this.versioning,
+    this.getBareVersion,
+    this.prefixTag
+  )
+}
+```
 Enable and specify the path of the plugin in `.releaser.json`:
 ```json
 {
@@ -147,6 +163,13 @@ Enable and specify the path of the plugin in `.releaser.json`:
 }
 ```
 Run the releaser as usual, that's all.
+
+## Context Functions
+1. `config` is an instance of `convict` object. It basically has a `get` method to read configuration values. More methods also available. Refer to the documentation of `convict`.
+2. `git` has simple functions to read repository configuration and data. Refer to its [source code](https://github.com/muratgozel/node-releaser/blob/main/src/modules/git/index.js) for more information.
+3. `versioning` has methods related to versioning schemes calver and semver. Refer to its [source code](https://github.com/muratgozel/node-releaser/blob/main/src/modules/versioning/index.js) for more information.
+4. `getBareVersion` removes the version prefix from the supplied tag. `getBareVersion("v1.23") == "1.23"` (Assuming "v" is the prefix)
+5. `prefixTag` adds prefix to the supplied tag. `prefixTag("1.23") == "v1.23"` (Assuming "v" is the prefix)
 
 ---
 
