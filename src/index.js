@@ -23,7 +23,13 @@ function lib() {
     plugins.updateContext('git', store.ctx.git)
     plugins.updateContext('versioning', store.ctx.versioning)
     plugins.updateContext('getBareVersion', function(tag) {
-      return tag.slice(store.ctx.config.get('versioning.prefix').length)
+      const prefix = store.ctx.config.get('versioning.prefix')
+
+      if (tag.indexOf(prefix) !== 0) {
+        return tag
+      }
+
+      return tag.slice(prefix.length)
     })
     plugins.updateContext('prefixTag', function(tagBare) {
       return store.ctx.config.get('versioning.prefix') + tagBare
