@@ -10,6 +10,8 @@ function verifyCodebase() {
     throw new Error('Nothing have changed in the codebase.')
   }
 
+  getBranchName()
+
   return true
 }
 
@@ -30,68 +32,19 @@ function getLatestTag() {
 }
 
 function getChangelogForTag(tag) {
-  // get hashes of last 1000 commits
-  const output = execSync('git log --pretty=oneline --decorate=short -1000')
-    .toString()
-    .split(/[\n\r]/)
-    .filter(l => l.length > 0)
-
-  // get hashes of the commit messages for the tag
-  const re = /([a-z0-9]+)(\s\(.*\))?/
-  const hashes = []
-  for (var i = 0; i < output.length; i++) {
-    const [empty, hash, refstr] = output[i].match(re)
-    const foundtags = typeof refstr == 'string'
-      ? refstr
-          .trim()
-          .slice(1, -1)
-          .replace('HEAD -> ', '')
-          .split(',')
-          .filter(s => s.indexOf('tag: ') !== -1)
-          .map(s => s.split(':')[1].trim())
-      : []
-
-    if (typeof refstr == 'string' && foundtags.indexOf(tag) !== -1) {
-      hashes.push(hash)
-    }
-    else if (typeof refstr == 'string' && foundtags.length > 0 && hashes.length > 0) {
-      break;
-    }
-    else if (hashes.length > 0) {
-      hashes.push(hash)
-    }
-    else {}
-  }
-
-  if (hashes.length === 0) {
-    return []
-  }
-
-  console.log('hashes:', hashes)
-
-  // get commit messages including multiline
-  const revrange = [hashes[hashes.length-1], hashes[0]]
-  const output2 = execSync(`git log ${revrange[0]}..${revrange[1]} --format="%H %s%n%b"`)
+  return execSync(`git log --pretty=format:"%B" ${tag}..`)
     .toString()
     .split(/[\n\r]{2}/)
     .filter(l => l.length > 0)
-  const msgsByCommit = output2.reduce(function(memo, item) {
-    memo[item.slice(0, hashes[0].length)] = item.slice(hashes[0].length + 1).split(/[\n\r]/)
-    return memo
-  }, {})
-
-  console.log('msgsByCommit:', msgsByCommit)
-
-  return hashes.reduce(function(memo, hash) {
-    if (msgsByCommit.hasOwnProperty(hash)) {
-      msgsByCommit[hash].map(msg => memo.push(msg))
-    }
-    return memo
-  }, [])
+    .map(l => l.trim())
 }
 
 function getBranchName() {
-  return execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
+  try {
+    return execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
+  } catch (e) {
+    throw new Error('No branch found. Make a commit if this is an empty repository.')
+  }
 }
 
 function getRemoteOrigin() {

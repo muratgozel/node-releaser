@@ -1,8 +1,20 @@
 # node-releaser
 Automated semantic and calendar versioning tool with plugin support.
 
+![NPM](https://img.shields.io/npm/l/node-releaser)
+[![npm version](https://badge.fury.io/js/node-releaser.svg)](https://badge.fury.io/js/node-releaser)
+![npm bundle size](https://img.shields.io/bundlephobia/min/node-releaser)
+![npm](https://img.shields.io/npm/dy/node-releaser)
+
 ## Introduction
-`releaser` can be used in any environment that runs node.js. It is based on `git` and works either from terminal and node environment. It automates versioning in your projects and automates pushing codebase changes to the remote services such as **Github** and **Gitlab**. It is extendable through plugins such as npm (see `src/plugins` folder).
+`releaser` can be used in any environment that runs node.js. It is based on `git` and works either from terminal and node environment. It automates versioning in your projects and automates pushing codebase changes to the remote version control services such as **Github** and **Gitlab**. It is also extendable through plugins. (see `src/plugins` folder).
+
+**Features overview:**
+1. Based on git.
+2. Powerful configuration management. (thanks to [convict](https://github.com/mozilla/node-convict/tree/master/packages/convict))
+3. Supports both [semver](https://github.com/npm/node-semver) and [calver](https://github.com/muratgozel/node-calver) while versioning.
+4. Generates changelog based on git commit messages.
+5. npm, github and gitlab plugins. See configuration reference below.
 
 ## Install
 As a cli tool, it is recommended to install it globally:
@@ -10,33 +22,134 @@ As a cli tool, it is recommended to install it globally:
 npm i -g node-releaser
 ```
 
-## Configuration File Reference
-Create a file called `.releaser.json` in your project directory. It may have the following parameters:
-```js
+## Usage (CLI)
+Make sure `releaser` is available:
+```sh
+releaser --version
+```
+Look at available commands:
+```sh
+releaser <cmd> [args]
+
+Commands:
+  releaser major           Creates a major release
+  releaser minor           Creates a minor release
+  releaser patch           Creates a patch release
+  releaser premajor        Creates a premajor release. (semver)
+  releaser preminor        Creates a preminor release. (semver)
+  releaser prepatch        Creates a prepatch release. (semver)
+  releaser prerelease      Creates a prerelease release. (semver)
+  releaser calendar        Creates a calendar release. (calver)
+  releaser micro           Creates a micro release. (calver)
+  releaser dev             Creates a dev release. (calver)
+  releaser alpha           Creates an alpha release. (calver)
+  releaser beta            Creates a beta release. (calver)
+  releaser rc              Creates an rc release. (calver)
+  releaser calendar.major  Creates a calendar or major release. (calver)
+  releaser calendar.minor  Creates a calendar or minor release. (calver)
+  releaser calendar.micro  Creates a calendar or micro release. (calver)
+  releaser calendar.dev    Creates a calendar or dev release. (calver)
+  releaser calendar.alpha  Creates a calendar or alpha release. (calver)
+  releaser calendar.beta   Creates a calendar or beta release. (calver)
+  releaser calendar.rc     Creates a calendar or rc release. (calver)
+
+Options:
+  --version  Show version number                                       [boolean]
+  --help     Show help                                                 [boolean]
+```
+First argument is basically the level for the next version. Depending on the versioning scheme you chose, the level should be compatible with the scheme (semver or calver).
+
+Make a release:
+```sh
+releaser beta -m "initial release."
+```
+This will create the next version number and push the changes to the remote repository without any plugins.
+
+You can specify multiple messages:
+```sh
+releaser minor -m "fixed something" -m "added something."
+```
+
+## Configuration Loading
+There are 3 ways to load your config in releaser. Before going into that take a look at the [configuration schema](https://github.com/muratgozel/node-releaser/blob/main/src/config/schema.js). According to this schema, you can load your config by:
+1. Creating **.releaser.json** file
+2. Environment variables
+3. Command line arguments.
+
+An example configuration which
+1. publishes a package on npm
+2. updates the version field of the package.json file
+3. creates a release on github
+
+can be achieved in one of the following three ways:
+1. Creating **.releaser.json** file:
+```json
 {
-  versioning: {
-    // versioning scheme: semver or calver
-    scheme: 'semver',
-    // calver versioning format
-    format: 'yy.mm.micro' // calver format
+  "npm": {
+    "enable": true,
+    "updatePkgJson": true,
+    "publish": true
   },
-
-  npm: {
-    // enable npm plugin
-    enable: false,
-    // updates version number in the package.json file
-    updatePkgJson: false,
-    // also publish on npm.
-    publish: false
-  },
-
-  github: {
-    // enable github plugin
-    enable: false,
-    // make a release on github
-    release: false,
-    // github personel access token
-    token: ''
+  "github": {
+    "enable": true,
+    "release": true,
+    "token": "GITHUB_PERSONAL_ACCESS_TOKEN"
   }
 }
 ```
+2. Environment variables:
+```sh
+RELEASER_GITHUB_TOKEN=token RELEASER_GITHUB_ENABLE=true RELEASER_GITHUB_RELEASE=true RELEASER_NPM_ENABLE=true RELEASER_NPM_UPDATEPKGJSON=true RELEASER_NPM_PUBLISH=true releaser patch "something."
+```
+3. Command line arguments.
+```sh
+releaser patch "something." --github-token token --github-enable --github-release --npm-enable --npm-updatepkgjson --npm-publish
+```
+You can even mix them up:
+```sh
+RELEASER_GITHUB_TOKEN=token releaser patch "something." --github-enable --github-release
+# and npm parameters inside .releaser.json file.
+```
+
+## Plugins
+A template for the plugin:
+```js
+function myplugin() {
+  function initiated(config, git) {
+    // triggered when config is ready
+  }
+
+  function beforePush(nextTag) {
+    // triggered when the next version computed
+  }
+
+  function afterPush(config, tag) {
+    // triggered when after git push
+  }
+
+  return {
+    initiated: initiated,
+    beforePush: beforePush,
+    afterPush: afterPush
+  }
+}
+
+module.exports = myplugin()
+```
+Enable and specify the path of the plugin in `.releaser.json`:
+```json
+{
+  "myplugin": {
+    "enable": true,
+    "path": "./devops/releaser-plugins/myplugin.js",
+    "someOtherOption": "yes"
+  }
+}
+```
+Run the releaser as usual, that's all.
+
+---
+
+Thanks for watching 🐬
+
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F1RFO7)

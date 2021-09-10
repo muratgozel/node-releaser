@@ -23,7 +23,9 @@ function github() {
   }
 
   function afterPush(config, tag) {
-    octokit.request('POST /repos/{owner}/{repo}/releases', {
+    if (!config.get('github.release')) return
+
+    store.octokit.request('POST /repos/{owner}/{repo}/releases', {
       owner: store.owner,
       repo: store.repo,
       tag_name: tag

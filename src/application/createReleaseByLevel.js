@@ -16,7 +16,6 @@ module.exports = async function createReleaseByLevel(level, ctx) {
 
   git.push(nextTag, messages)
   const changelog = git.getChangelogForTag(nextTag)
-  console.log('changelog:', changelog)
 
   plugins.call('afterPush', config, nextTag)
 
