@@ -37,6 +37,10 @@ function plugins() {
       register(require('../../plugins/github'))
     }
 
+    if (config.get('gitlab.enable')) {
+      register(require('../../plugins/gitlab'))
+    }
+
     if (config.get('docker.enable')) {
       register(require('../../plugins/docker'))
     }

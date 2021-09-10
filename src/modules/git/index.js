@@ -61,14 +61,19 @@ function getRemoteOrigin() {
   const url = arr[0].trim().split(' ').reverse()[0]
 
   if (url.indexOf('git') === 0) {
-    const [owner, repo] = url.split(':')[1].replace(/(\.git)$/, '').split('/')
-    return {owner, repo, url}
+    const [owner, ...rest] = url.split(':')[1].replace(/(\.git)$/, '').split('/')
+    const repo = rest[rest.length - 1]
+    const path = [owner].concat(rest).join('/')
+    return {owner, repo, url, path}
   }
 
   if (url.indexOf('http') === 0) {
-    const [repo, owner] = url.split('/').reverse()
-    return {owner, repo, url}
+    const [owner, ...rest] = url.replace(/(\.git)$/, '').split('/').filter((p, i) => i > 2)
+    const repo = rest[rest.length - 1]
+    const path = [owner].concat(rest).join('/')
+    return {owner, repo, url, path}
   }
+
 
   throw new Error('Remote origin not found.')
 }

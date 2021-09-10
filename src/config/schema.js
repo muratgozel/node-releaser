@@ -89,6 +89,29 @@ module.exports = {
       arg: 'github-token'
     }
   },
+  gitlab: {
+    enable: {
+      doc: 'Enables gitlab plugin.',
+      format: Boolean,
+      default: false,
+      env: 'RELEASER_GITLAB_ENABLE',
+      arg: 'gitlab-enable'
+    },
+    release: {
+      doc: 'Make a release on gitlab.',
+      format: Boolean,
+      default: false,
+      env: 'RELEASER_GITLAB_RELEASE',
+      arg: 'gitlab-release'
+    },
+    token: {
+      doc: 'Gitlab personel access token.',
+      format: String,
+      default: '',
+      env: 'RELEASER_GITLAB_TOKEN',
+      arg: 'gitlab-token'
+    }
+  },
   docker: {
     enable: {
       doc: 'Enables docker plugin.',
