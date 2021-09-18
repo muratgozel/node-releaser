@@ -1,6 +1,6 @@
 {
   "name": "node-releaser",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Automated semantic and calendar versioning tool with plugin support.",
   "main": "src/index.js",
   "bin": {

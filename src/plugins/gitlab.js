@@ -22,7 +22,7 @@ function gitlab() {
 
     const body = changelog.map(item => '- ' + item).join("\r\n")
     const payload = {
-      baseUrl: 'https://gitlab.com/api/v3',
+      baseUrl: 'https://gitlab.com/api/v4',
       token: this.config.get('gitlab.token'),
       body: {
         tag_name: tag,
