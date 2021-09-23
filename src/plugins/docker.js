@@ -10,7 +10,10 @@ function docker() {
 
     console.log(colors.blue('Building docker image with "latest" and "' + nextTag + '" tags...'))
 
-    const connstr = this.config.get('docker.user') + '/' + this.config.get('docker.repo')
+    const host = this.config.get('docker.registry')
+    const user = this.config.get('docker.user')
+    const repo = this.config.get('docker.repo')
+    const connstr = (host.length > 0 ? host + '/' : '') + user + '/' + repo
     const cmd = `docker build -t ${connstr}:latest -t ${connstr}:${nextTag} ${this.config.get('docker.build.path')}`
     execSync(cmd, {stdio: 'inherit', encoding: 'utf8'})
   }
@@ -21,7 +24,9 @@ function docker() {
     console.log(colors.blue('Publishing docker image on docker hub...'))
 
     const host = this.config.get('docker.registry')
-    const connstr = (host.length > 0 ? host + '/' : '') + this.config.get('docker.user') + '/' + this.config.get('docker.repo')
+    const user = this.config.get('docker.user')
+    const repo = this.config.get('docker.repo')
+    const connstr = (host.length > 0 ? host + '/' : '') + user + '/' + repo
     const cmd = `docker push ${connstr} --all-tags`
     execSync(cmd, {stdio: 'inherit', encoding: 'utf8'})
   }
