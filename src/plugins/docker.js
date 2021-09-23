@@ -20,7 +20,8 @@ function docker() {
 
     console.log(colors.blue('Publishing docker image on docker hub...'))
 
-    const connstr = this.config.get('docker.user') + '/' + this.config.get('docker.repo')
+    const host = this.config.get('docker.registry')
+    const connstr = (host.length > 0 ? host + '/' : '') + this.config.get('docker.user') + '/' + this.config.get('docker.repo')
     const cmd = `docker push ${connstr} --all-tags`
     execSync(cmd, {stdio: 'inherit', encoding: 'utf8'})
   }

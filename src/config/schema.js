@@ -134,6 +134,13 @@ module.exports = {
       env: 'RELEASER_DOCKER_REPO',
       arg: 'docker-repo'
     },
+    registry: {
+      doc: 'Container registry host. ghcr.io for example. Default is Docker Hub.',
+      format: String,
+      default: '',
+      env: 'RELEASER_DOCKER_REGISTRY',
+      arg: 'docker-registry'
+    },
     build: {
       path: {
         doc: 'Docker build context.',
