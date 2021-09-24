@@ -1,5 +1,5 @@
 # node-releaser
-Automated semantic and calendar versioning tool with plugin support.
+Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.
 
 ![NPM](https://img.shields.io/npm/l/node-releaser)
 [![npm version](https://badge.fury.io/js/node-releaser.svg)](https://badge.fury.io/js/node-releaser)
@@ -7,18 +7,16 @@ Automated semantic and calendar versioning tool with plugin support.
 ![npm](https://img.shields.io/npm/dy/node-releaser)
 
 ## Introduction
-`releaser` can be used in any environment that runs node.js. It is based on `git` and works either from terminal and node environment. It automates versioning in your projects and automates pushing codebase changes to the remote version control services such as **Github** and **Gitlab**. It is also extendable through plugins. (see `src/plugins` folder).
-
-**Features overview:**
-1. Based on git.
-2. Powerful configuration management. (thanks to [convict](https://github.com/mozilla/node-convict/tree/master/packages/convict))
-3. Supports both [semver](https://github.com/npm/node-semver) and [calver](https://github.com/muratgozel/node-calver) while versioning.
-4. Supports prefixing version numbers.
-5. Generates changelog based on git commit messages.
-6. npm, github and gitlab plugins. See configuration reference below.
+`releaser` is based on `git` and `node.js`. Any developer who works with `git` can use it to automate releasing and publishing process of any project. Here is a summary of what can be done with releaser:
+1. Use [semver](https://github.com/npm/node-semver) or [calver](https://github.com/muratgozel/node-calver) in your project. New versions computed automatically as you release. This feature based on git tags.
+2. It works in sync with the remote code repositories. Supported git services are **Github** and **Gitlab** as you can see in the `src/plugins` folder.
+3. Automated **npm** package management. New releases automatically be pushed to npm and updates the version field in package.json file.
+4. Automated docker image publishing. It builds the image with new version number and `latest` tags and push it to docker hub or any other docker image registry.
+5. Powerful configuration management thanks to [convict](https://github.com/mozilla/node-convict/tree/master/packages/convict). Configuration can be load from a file, env vars and cli args at the same time.
+6. Extendible through plugins. You can write a changelog plugin for example that pushes commit messages to a changelog file as you release.
 
 ## Install
-As a cli tool, it is recommended to install it globally:
+Install it globally:
 ```sh
 npm i -g node-releaser
 ```
@@ -28,64 +26,148 @@ Make sure `releaser` is available:
 ```sh
 releaser --version
 ```
-Look at available commands:
-```sh
-releaser <cmd> [args]
 
-Commands:
-  releaser major           Creates a major release
-  releaser minor           Creates a minor release
-  releaser patch           Creates a patch release
-  releaser premajor        Creates a premajor release. (semver)
-  releaser preminor        Creates a preminor release. (semver)
-  releaser prepatch        Creates a prepatch release. (semver)
-  releaser prerelease      Creates a prerelease release. (semver)
-  releaser calendar        Creates a calendar release. (calver)
-  releaser micro           Creates a micro release. (calver)
-  releaser dev             Creates a dev release. (calver)
-  releaser alpha           Creates an alpha release. (calver)
-  releaser beta            Creates a beta release. (calver)
-  releaser rc              Creates an rc release. (calver)
-  releaser calendar.major  Creates a calendar or major release. (calver)
-  releaser calendar.minor  Creates a calendar or minor release. (calver)
-  releaser calendar.micro  Creates a calendar or micro release. (calver)
-  releaser calendar.dev    Creates a calendar or dev release. (calver)
-  releaser calendar.alpha  Creates a calendar or alpha release. (calver)
-  releaser calendar.beta   Creates a calendar or beta release. (calver)
-  releaser calendar.rc     Creates a calendar or rc release. (calver)
-
-Options:
-  --version  Show version number                                       [boolean]
-  --help     Show help                                                 [boolean]
+### Create A Configuration File (.releaser.json)
+First, this is the schema to write valid configuration files:
+```js
+versioning: {
+  scheme: {
+    doc: 'Versioning scheme. semver or calver.',
+    format: String,
+    default: 'semver',
+    env: 'RELEASER_VERSIONING_SCHEME',
+    arg: 'versioning-scheme'
+  },
+  format: {
+    doc: 'Calver versioning format.',
+    format: String,
+    default: '',
+    env: 'RELEASER_VERSIONING_FORMAT',
+    arg: 'versioning-format'
+  },
+  prefix: {
+    doc: 'Tag prefix.',
+    format: String,
+    default: 'v',
+    env: 'RELEASER_VERSIONING_PREFIX',
+    arg: 'versioning-prefix'
+  }
+},
+npm: {
+  enable: {
+    doc: 'Enables npm plugin.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_NPM_ENABLE',
+    arg: 'npm-enable'
+  },
+  updatePkgJson: {
+    doc: 'Updates version number in the package.json file',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_UPDATE_PKG_JSON',
+    arg: 'npm-updatepkgjson'
+  },
+  publish: {
+    doc: 'Publish on npm.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_NPM_PUBLISH',
+    arg: 'npm-publish'
+  }
+},
+github: {
+  enable: {
+    doc: 'Enables github plugin.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_GITHUB_ENABLE',
+    arg: 'github-enable'
+  },
+  release: {
+    doc: 'Make a release on github.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_GITHUB_RELEASE',
+    arg: 'github-release'
+  },
+  token: {
+    doc: 'Github personel access token.',
+    format: String,
+    default: '',
+    env: 'RELEASER_GITHUB_TOKEN',
+    arg: 'github-token'
+  }
+},
+gitlab: {
+  enable: {
+    doc: 'Enables gitlab plugin.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_GITLAB_ENABLE',
+    arg: 'gitlab-enable'
+  },
+  release: {
+    doc: 'Make a release on gitlab.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_GITLAB_RELEASE',
+    arg: 'gitlab-release'
+  },
+  token: {
+    doc: 'Gitlab personel access token.',
+    format: String,
+    default: '',
+    env: 'RELEASER_GITLAB_TOKEN',
+    arg: 'gitlab-token'
+  }
+},
+docker: {
+  enable: {
+    doc: 'Enables docker plugin.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_DOCKER_ENABLE',
+    arg: 'docker-enable'
+  },
+  user: {
+    doc: 'Docker hub user name.',
+    format: String,
+    default: '',
+    env: 'RELEASER_DOCKER_USER',
+    arg: 'docker-user'
+  },
+  repo: {
+    doc: 'The name of the repo on docker hub.',
+    format: String,
+    default: '',
+    env: 'RELEASER_DOCKER_REPO',
+    arg: 'docker-repo'
+  },
+  registry: {
+    doc: 'Container registry host. ghcr.io for example. Default is Docker Hub.',
+    format: String,
+    default: '',
+    env: 'RELEASER_DOCKER_REGISTRY',
+    arg: 'docker-registry'
+  },
+  build: {
+    path: {
+      doc: 'Docker build context.',
+      format: String,
+      default: '.',
+      env: 'RELEASER_DOCKER_BUILD_PATH',
+      arg: 'docker-build-path'
+    }
+  }
+}
 ```
-First argument is basically the level for the next version. Depending on the versioning scheme you chose, the level should be compatible with the scheme (semver or calver).
-
-Make a release:
-```sh
-releaser beta -m "initial release."
-```
-This will create the next version number and push the changes to the remote repository without any plugins.
-
-You can specify multiple messages:
-```sh
-releaser minor -m "fixed something" -m "added something."
-```
-
-## Configuration Loading
-There are 3 ways to load your config in releaser. Before going into that take a look at the [configuration schema](https://github.com/muratgozel/node-releaser/blob/main/src/config/schema.js). According to this schema, you can load your config by:
-1. Creating **.releaser.json** file
-2. Environment variables
-3. Command line arguments.
-
-An example configuration which
-1. publishes a package on npm
-2. updates the version field of the package.json file
-3. creates a release on github
-
-can be achieved in one of the following three ways:
-1. Creating **.releaser.json** file:
+An example `.releaser.json` file could be:
 ```json
 {
+  "versioning": {
+    "scheme": "semver"
+  },
   "npm": {
     "enable": true,
     "updatePkgJson": true,
@@ -93,27 +175,65 @@ can be achieved in one of the following three ways:
   },
   "github": {
     "enable": true,
-    "release": true,
-    "token": "GITHUB_PERSONAL_ACCESS_TOKEN"
+    "release": true
   }
 }
 ```
-2. Environment variables:
+This configuration will:
+1. Generate the next version according to **semver** scheme,
+2. Prefix the version number with **v** (because its by default),
+3. Updates package.json's version field (because npm.updatePkgJson enabled),
+3. Push the changes to the remote repository (because github.enabled),
+4. Creates a release on Github (because github.release),
+5. Publishes the package on npm.
+We didn't specify `github.token` because we can not put it inside file of course. We will specify it as env var `RELEASER_GITHUB_TOKEN=...` or a cli arg `--github-token`.
+
+### Running releaser
+Releaser only need two things in order to run. The level and commit messages. Level is the version level. major, minor etc. in semver or calendar, calendar.major etc. in calver. Commit messages are one or more -m flags that explain the changes in the codebase in that release.
+
+Look at available commands:
 ```sh
-RELEASER_GITHUB_TOKEN=token RELEASER_GITHUB_ENABLE=true RELEASER_GITHUB_RELEASE=true RELEASER_NPM_ENABLE=true RELEASER_NPM_UPDATEPKGJSON=true RELEASER_NPM_PUBLISH=true releaser patch "something."
+releaser <cmd> [args]
+
+Commands:
+  releaser major           [semver, calver] Creates a major release
+  releaser minor           [semver, calver] Creates a minor release
+  releaser patch           [semver, calver] Creates a patch release
+  releaser premajor        [semver] Creates a premajor release.
+  releaser preminor        [semver] Creates a preminor release.
+  releaser prepatch        [semver] Creates a prepatch release.
+  releaser prerelease      [semver] Creates a prerelease release.
+  releaser calendar        [calver] Creates a calendar release.
+  releaser micro           [calver] Creates a micro release.
+  releaser calendar.major  [calver] Creates a calendar or major release.
+  releaser calendar.minor  [calver] Creates a calendar or minor release.
+  releaser calendar.micro  [calver] Creates a calendar or micro release.
+  releaser calendar.dev    [calver] Creates a calendar or dev release.
+  releaser calendar.alpha  [calver] Creates a calendar or alpha release.
+  releaser calendar.beta   [calver] Creates a calendar or beta release.
+  releaser calendar.rc     [calver] Creates a calendar or rc release.
+  releaser dev             [calver] Creates a dev release.
+  releaser alpha           [calver] Creates an alpha release.
+  releaser beta            [calver] Creates a beta release.
+  releaser rc              [calver] Creates an rc release.
+
+Options:
+  --version  Show version number                                       [boolean]
+  --help     Show help                                                 [boolean]
 ```
-3. Command line arguments.
+
+Make a release:
 ```sh
-releaser patch "something." --github-token token --github-enable --github-release --npm-enable --npm-updatepkgjson --npm-publish
+releaser major -m "initial release."
 ```
-You can even mix them up:
+
+Specify multiple messages:
 ```sh
-RELEASER_GITHUB_TOKEN=token releaser patch "something." --github-enable --github-release
-# and npm parameters inside .releaser.json file.
+releaser minor -m "fixed something" -m "added something."
 ```
 
 ## Plugins
-A template for the plugin:
+A template for a plugin:
 ```js
 function myplugin() {
   async function initiated() {
@@ -137,21 +257,28 @@ function myplugin() {
 
 module.exports = myplugin()
 ```
-This is a minimal setup. All methods have the same special context which is available with `this`:
+This is a minimal setup. All methods have the same special context which is accessible with `this`:
 ```js
 async function beforePush(nextTag) {
   // triggered when the next version computed
 
   // context:
   console.log(
+    // you can access all config props. this.config.get('github.token') for example
     this.config,
-    this.git,
-    this.versioning,
+    // a function that returns unprefixed version number. Without "v" for example.
     this.getBareVersion,
-    this.prefixTag
+    // a function that return prefixed version number.
+    this.prefixTag,
+    // an object which reads repository data and has some methods. refer to src/modules/git
+    this.git,
+    // an object that has one method which is generateNextTag
+    this.versioning
   )
 }
 ```
+
+### Activating Plugin
 Enable and specify the path of the plugin in `.releaser.json`:
 ```json
 {
@@ -164,12 +291,9 @@ Enable and specify the path of the plugin in `.releaser.json`:
 ```
 Run the releaser as usual, that's all.
 
-## Context Functions
-1. `config` is an instance of `convict` object. It basically has a `get` method to read configuration values. More methods also available. Refer to the documentation of `convict`.
-2. `git` has simple functions to read repository configuration and data. Refer to its [source code](https://github.com/muratgozel/node-releaser/blob/main/src/modules/git/index.js) for more information.
-3. `versioning` has methods related to versioning schemes calver and semver. Refer to its [source code](https://github.com/muratgozel/node-releaser/blob/main/src/modules/versioning/index.js) for more information.
-4. `getBareVersion` removes the version prefix from the supplied tag. `getBareVersion("v1.23") == "1.23"` (Assuming "v" is the prefix)
-5. `prefixTag` adds prefix to the supplied tag. `prefixTag("1.23") == "v1.23"` (Assuming "v" is the prefix)
+---
+
+Version management of this repository done by [releaser](https://github.com/muratgozel/node-releaser) 🚀
 
 ---
 

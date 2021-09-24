@@ -14,7 +14,7 @@ yargs
   .usage(`releaser <cmd> [args]`)
   .command(
     'major',
-    'Creates a major release',
+    '[semver, calver] Creates a major release',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -24,7 +24,7 @@ yargs
   )
   .command(
     'minor',
-    'Creates a minor release',
+    '[semver, calver] Creates a minor release',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -34,7 +34,7 @@ yargs
   )
   .command(
     'patch',
-    'Creates a patch release',
+    '[semver, calver] Creates a patch release',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -44,7 +44,7 @@ yargs
   )
   .command(
     'premajor',
-    'Creates a premajor release. (semver)',
+    '[semver] Creates a premajor release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -54,7 +54,7 @@ yargs
   )
   .command(
     'preminor',
-    'Creates a preminor release. (semver)',
+    '[semver] Creates a preminor release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -64,7 +64,7 @@ yargs
   )
   .command(
     'prepatch',
-    'Creates a prepatch release. (semver)',
+    '[semver] Creates a prepatch release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -74,7 +74,7 @@ yargs
   )
   .command(
     'prerelease',
-    'Creates a prerelease release. (semver)',
+    '[semver] Creates a prerelease release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -84,7 +84,7 @@ yargs
   )
   .command(
     'calendar',
-    'Creates a calendar release. (calver)',
+    '[calver] Creates a calendar release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -94,7 +94,7 @@ yargs
   )
   .command(
     'micro',
-    'Creates a micro release. (calver)',
+    '[calver] Creates a micro release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -103,48 +103,8 @@ yargs
     }
   )
   .command(
-    'dev',
-    'Creates a dev release. (calver)',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
-    async argv => {
-      await lib.createReleaseByLevelCLI('dev', argv)
-    }
-  )
-  .command(
-    'alpha',
-    'Creates an alpha release. (calver)',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
-    async argv => {
-      await lib.createReleaseByLevelCLI('alpha', argv)
-    }
-  )
-  .command(
-    'beta',
-    'Creates a beta release. (calver)',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
-    async argv => {
-      await lib.createReleaseByLevelCLI('beta', argv)
-    }
-  )
-  .command(
-    'rc',
-    'Creates an rc release. (calver)',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
-    async argv => {
-      await lib.createReleaseByLevelCLI('rc', argv)
-    }
-  )
-  .command(
     'calendar.major',
-    'Creates a calendar or major release. (calver)',
+    '[calver] Creates a calendar or major release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -154,7 +114,7 @@ yargs
   )
   .command(
     'calendar.minor',
-    'Creates a calendar or minor release. (calver)',
+    '[calver] Creates a calendar or minor release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -164,7 +124,7 @@ yargs
   )
   .command(
     'calendar.micro',
-    'Creates a calendar or micro release. (calver)',
+    '[calver] Creates a calendar or micro release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -174,7 +134,7 @@ yargs
   )
   .command(
     'calendar.dev',
-    'Creates a calendar or dev release. (calver)',
+    '[calver] Creates a calendar or dev release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -184,7 +144,7 @@ yargs
   )
   .command(
     'calendar.alpha',
-    'Creates a calendar or alpha release. (calver)',
+    '[calver] Creates a calendar or alpha release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -194,7 +154,7 @@ yargs
   )
   .command(
     'calendar.beta',
-    'Creates a calendar or beta release. (calver)',
+    '[calver] Creates a calendar or beta release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
@@ -204,12 +164,52 @@ yargs
   )
   .command(
     'calendar.rc',
-    'Creates a calendar or rc release. (calver)',
+    '[calver] Creates a calendar or rc release.',
     yargs => {
       yargs.positional('message', yargsPosMsg)
     },
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.rc', argv)
+    }
+  )
+  .command(
+    'dev',
+    '[calver] Creates a dev release.',
+    yargs => {
+      yargs.positional('message', yargsPosMsg)
+    },
+    async argv => {
+      await lib.createReleaseByLevelCLI('dev', argv)
+    }
+  )
+  .command(
+    'alpha',
+    '[calver] Creates an alpha release.',
+    yargs => {
+      yargs.positional('message', yargsPosMsg)
+    },
+    async argv => {
+      await lib.createReleaseByLevelCLI('alpha', argv)
+    }
+  )
+  .command(
+    'beta',
+    '[calver] Creates a beta release.',
+    yargs => {
+      yargs.positional('message', yargsPosMsg)
+    },
+    async argv => {
+      await lib.createReleaseByLevelCLI('beta', argv)
+    }
+  )
+  .command(
+    'rc',
+    '[calver] Creates an rc release.',
+    yargs => {
+      yargs.positional('message', yargsPosMsg)
+    },
+    async argv => {
+      await lib.createReleaseByLevelCLI('rc', argv)
     }
   )
   .help()
