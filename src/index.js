@@ -42,7 +42,8 @@ function lib() {
 
   async function createReleaseByLevelCLI(level, argv) {
     const messages = Array.isArray(argv.message) ? argv.message : [argv.message]
-    return await createReleaseByLevel(level, {messages})
+    const forceCalverFormat = argv.forceCalverFormat
+    return await createReleaseByLevel(level, {messages, forceCalverFormat})
   }
 
   async function createReleaseByLevel(level, params) {

@@ -85,7 +85,7 @@ function push(nextTag, messages) {
     'git tag -a "' + nextTag + '" ' + msgscmd,
     'git add .',
     'git commit ' + msgscmd,
-    'git push -u origin ' + branch + ' --tags'
+    'git push --atomic origin ' + branch + ' ' + nextTag + ''
   ]
   for (let i = 0; i < commands.length; i++) {
     try {

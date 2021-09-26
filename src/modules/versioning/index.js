@@ -1,10 +1,14 @@
 const semver = require('semver')
 const calver = require('calver')
 
-function generateNextTag(level, currentTag, scheme, calverFormat) {
+function generateNextTag(level, currentTag, scheme, calverFormat, {forceCalverFormat}) {
   let nextTag = null
 
-  if (currentTag == '') {
+  if (forceCalverFormat) {
+    nextTag = calver.init(calverFormat)
+    nextTag = calver.inc(calverFormat, nextTag, level)
+  }
+  else if (currentTag == '') {
     if (scheme == 'semver') nextTag = '0.1.0'
     else nextTag = calver.init(calverFormat)
   }

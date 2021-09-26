@@ -3,10 +3,18 @@
 const yargs = require('yargs')
 const lib = require('./index')
 
-const yargsPosMsg = {
-  type: 'string',
-  alias: 'm',
-  describe: 'Commit message. Can be specified multiple times to create multiline commit messages.'
+function registerLevelPositioners(yargs) {
+  yargs.positional('message', {
+    type: 'string',
+    alias: 'm',
+    describe: 'Commit message. Can be specified multiple times to create multiline commit messages.'
+  })
+
+  yargs.positional('force-calver-format', {
+    type: 'boolean',
+    default: false,
+    describe: 'Request a new tag based on a new calver format.'
+  })
 }
 
 yargs
@@ -15,9 +23,7 @@ yargs
   .command(
     'major',
     '[semver, calver] Creates a major release',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('major', argv)
     }
@@ -25,9 +31,7 @@ yargs
   .command(
     'minor',
     '[semver, calver] Creates a minor release',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('minor', argv)
     }
@@ -35,9 +39,7 @@ yargs
   .command(
     'patch',
     '[semver, calver] Creates a patch release',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('patch', argv)
     }
@@ -45,9 +47,7 @@ yargs
   .command(
     'premajor',
     '[semver] Creates a premajor release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('premajor', argv)
     }
@@ -55,9 +55,7 @@ yargs
   .command(
     'preminor',
     '[semver] Creates a preminor release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('preminor', argv)
     }
@@ -65,9 +63,7 @@ yargs
   .command(
     'prepatch',
     '[semver] Creates a prepatch release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('prepatch', argv)
     }
@@ -75,9 +71,7 @@ yargs
   .command(
     'prerelease',
     '[semver] Creates a prerelease release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('prerelease', argv)
     }
@@ -85,9 +79,7 @@ yargs
   .command(
     'calendar',
     '[calver] Creates a calendar release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar', argv)
     }
@@ -95,9 +87,7 @@ yargs
   .command(
     'micro',
     '[calver] Creates a micro release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('micro', argv)
     }
@@ -105,9 +95,7 @@ yargs
   .command(
     'calendar.major',
     '[calver] Creates a calendar or major release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.major', argv)
     }
@@ -115,9 +103,7 @@ yargs
   .command(
     'calendar.minor',
     '[calver] Creates a calendar or minor release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.minor', argv)
     }
@@ -125,9 +111,7 @@ yargs
   .command(
     'calendar.micro',
     '[calver] Creates a calendar or micro release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.micro', argv)
     }
@@ -135,9 +119,7 @@ yargs
   .command(
     'calendar.dev',
     '[calver] Creates a calendar or dev release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.dev', argv)
     }
@@ -145,9 +127,7 @@ yargs
   .command(
     'calendar.alpha',
     '[calver] Creates a calendar or alpha release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.alpha', argv)
     }
@@ -155,9 +135,7 @@ yargs
   .command(
     'calendar.beta',
     '[calver] Creates a calendar or beta release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.beta', argv)
     }
@@ -165,9 +143,7 @@ yargs
   .command(
     'calendar.rc',
     '[calver] Creates a calendar or rc release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('calendar.rc', argv)
     }
@@ -175,9 +151,7 @@ yargs
   .command(
     'dev',
     '[calver] Creates a dev release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('dev', argv)
     }
@@ -185,9 +159,7 @@ yargs
   .command(
     'alpha',
     '[calver] Creates an alpha release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('alpha', argv)
     }
@@ -195,9 +167,7 @@ yargs
   .command(
     'beta',
     '[calver] Creates a beta release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('beta', argv)
     }
@@ -205,9 +175,7 @@ yargs
   .command(
     'rc',
     '[calver] Creates an rc release.',
-    yargs => {
-      yargs.positional('message', yargsPosMsg)
-    },
+    registerLevelPositioners,
     async argv => {
       await lib.createReleaseByLevelCLI('rc', argv)
     }
