@@ -64,6 +64,13 @@ module.exports = {
       default: false,
       env: 'RELEASER_NPM_PUBLISH',
       arg: 'npm-publish'
+    },
+    publishCmdSuffix: {
+      doc: 'This will be added to the command "npm publish".',
+      format: String,
+      default: '',
+      env: 'RELEASER_NPM_PUBLISHCMDSUFFIX',
+      arg: 'npm-publishcmdsuffix'
     }
   },
   github: {

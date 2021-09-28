@@ -25,7 +25,8 @@ function npm() {
     if (!this.config.get('npm.publish')) return
 
     try {
-      execSync('npm publish --access public', {stdio: 'inherit', encoding: 'utf8'})
+      const cmd = 'npm publish ' + config.get('publishCmdSuffix')
+      execSync(cmd, {stdio: 'inherit', encoding: 'utf8'})
     } catch (e) {
       throw e
     }
