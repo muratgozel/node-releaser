@@ -25,7 +25,7 @@ function npm() {
     if (!this.config.get('npm.publish')) return
 
     try {
-      const cmd = 'npm publish ' + config.get('publishCmdSuffix')
+      const cmd = 'npm publish ' + this.config.get('publishCmdSuffix')
       execSync(cmd, {stdio: 'inherit', encoding: 'utf8'})
     } catch (e) {
       throw e
