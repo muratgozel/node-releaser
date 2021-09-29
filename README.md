@@ -74,6 +74,13 @@ npm: {
     default: false,
     env: 'RELEASER_NPM_PUBLISH',
     arg: 'npm-publish'
+  },
+  publishCmdSuffix: {
+    doc: 'This will be added to the command "npm publish".',
+    format: String,
+    default: '',
+    env: 'RELEASER_NPM_PUBLISHCMDSUFFIX',
+    arg: 'npm-publishcmdsuffix'
   }
 },
 github: {
@@ -161,6 +168,29 @@ docker: {
     }
   }
 }
+cmd: {
+  enable: {
+    doc: 'Enables command plugin.',
+    format: Boolean,
+    default: false,
+    env: 'RELEASER_CMD_ENABLE',
+    arg: 'cmd-enable'
+  },
+  beforePush: {
+    doc: 'Shell command that runs before pushing changes to the remote.',
+    format: String,
+    default: '',
+    env: 'RELEASER_CMD_BEFOREPUSH',
+    arg: 'cmd-beforepush'
+  },
+  afterPush: {
+    doc: 'Shell command that runs after pushing changes to the remote.',
+    format: String,
+    default: '',
+    env: 'RELEASER_CMD_AFTERPUSH',
+    arg: 'cmd-afterpush'
+  }
+}
 ```
 An example `.releaser.json` file could be:
 ```json
@@ -232,7 +262,14 @@ Specify multiple messages:
 releaser minor -m "fixed something" -m "added something."
 ```
 
-## Plugins
+## Default Plugins
+1. **Github**: Github plugin is for creating releases on Github.
+2. **Gitlab**: Gitlab plugin is for creating releases on Gitlab.
+3. **npm**: Npm plugin can keep the version field in package.json up to date and responsible for publishing packages thorugh npm.
+4. **Docker**: Docker plugin is for building and pushing docker images to some container registry.
+5. **cmd**: Command plugin is for executing shell commands before or after running pushing code changes to the remote.
+
+## Plugin Development
 A template for a plugin:
 ```js
 function myplugin() {

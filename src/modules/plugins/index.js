@@ -44,6 +44,10 @@ function plugins() {
     if (config.get('docker.enable')) {
       register(require('../../plugins/docker'))
     }
+
+    if (config.get('cmd.enable')) {
+      register(require('../../plugins/cmd'))
+    }
   }
 
   function register(plugin) {

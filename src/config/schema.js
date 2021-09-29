@@ -157,5 +157,28 @@ module.exports = {
         arg: 'docker-build-path'
       }
     }
+  },
+  cmd: {
+    enable: {
+      doc: 'Enables command plugin.',
+      format: Boolean,
+      default: false,
+      env: 'RELEASER_CMD_ENABLE',
+      arg: 'cmd-enable'
+    },
+    beforePush: {
+      doc: 'Shell command that runs before pushing changes to the remote.',
+      format: String,
+      default: '',
+      env: 'RELEASER_CMD_BEFOREPUSH',
+      arg: 'cmd-beforepush'
+    },
+    afterPush: {
+      doc: 'Shell command that runs after pushing changes to the remote.',
+      format: String,
+      default: '',
+      env: 'RELEASER_CMD_AFTERPUSH',
+      arg: 'cmd-afterpush'
+    }
   }
 }
