@@ -15,20 +15,32 @@ function verifyCodebase() {
   return true
 }
 
-function getLatestTag() {
-  const rev = execSync('git rev-list --tags --max-count=1').toString().trim()
-  if (!rev) {
+function getLatestTag(scheme, format, config, versioning) {
+  const revs = execSync('git rev-list --tags --max-count=10').toString().trim().split(/[\r\n]/)
+  if (!revs) {
     return ''
   }
 
-  const cmd = 'git describe --tags ' + rev
-  const result = execSync(cmd).toString().trim()
+  for (var i = 0; i < revs.length; i++) {
+    const rev = revs[i]
+    let result = execSync(`git describe --tags ${rev}`).toString().trim()
 
-  if (result.indexOf('fatal') !== -1) {
-    return ''
+    if (result.indexOf('fatal') !== -1) {
+      return ''
+    }
+
+    if (config.get('versioning.prefix')) {
+      result = result.slice(config.get('versioning.prefix').length)
+    }
+
+    const valid = versioning.isValid(result, scheme, format)
+
+    if (valid === true) {
+      return config.get('versioning.prefix') + result
+    }
   }
 
-  return result
+  return ''
 }
 
 function getChangelogForTag(tag) {

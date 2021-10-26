@@ -20,6 +20,21 @@ function generateNextTag(level, currentTag, scheme, calverFormat, {forceCalverFo
   return nextTag
 }
 
+function isValid(tag, scheme, format='') {
+  if (scheme == 'semver') {
+    return typeof semver.valid(tag) === 'string'
+  }
+
+  if (scheme == 'calver') {
+    try {
+      calver.valid(format, tag)
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+}
+
 module.exports = {
-  generateNextTag
+  generateNextTag, isValid
 }

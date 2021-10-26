@@ -12,7 +12,7 @@ module.exports = async function createReleaseByLevel(level, ctx) {
 
   const scheme = config.get('versioning.scheme')
   const format = config.get('versioning.format')
-  const currentTag = git.getLatestTag()
+  const currentTag = git.getLatestTag(scheme, format, config, versioning)
   const currentTagBare = plugins.getContext().getBareVersion(currentTag)
   const nextTagBare = versioning.generateNextTag(level, currentTagBare, scheme, format, {forceCalverFormat})
   const nextTag = plugins.getContext().prefixTag(nextTagBare)
