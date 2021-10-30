@@ -17,7 +17,7 @@ function verifyCodebase() {
 
 function getLatestTag(scheme, format, config, versioning) {
   const revs = execSync('git rev-list --tags --max-count=10').toString().trim().split(/[\r\n]/)
-  if (!revs) {
+  if (!revs || !revs[0]) {
     return ''
   }
 
