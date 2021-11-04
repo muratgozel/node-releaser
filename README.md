@@ -226,26 +226,45 @@ Look at available commands:
 releaser <cmd> [args]
 
 Commands:
-  releaser major           [semver, calver] Creates a major release
-  releaser minor           [semver, calver] Creates a minor release
-  releaser patch           [semver, calver] Creates a patch release
-  releaser premajor        [semver] Creates a premajor release.
-  releaser preminor        [semver] Creates a preminor release.
-  releaser prepatch        [semver] Creates a prepatch release.
-  releaser prerelease      [semver] Creates a prerelease release.
-  releaser calendar        [calver] Creates a calendar release.
-  releaser micro           [calver] Creates a micro release.
-  releaser calendar.major  [calver] Creates a calendar or major release.
-  releaser calendar.minor  [calver] Creates a calendar or minor release.
-  releaser calendar.micro  [calver] Creates a calendar or micro release.
-  releaser calendar.dev    [calver] Creates a calendar or dev release.
-  releaser calendar.alpha  [calver] Creates a calendar or alpha release.
-  releaser calendar.beta   [calver] Creates a calendar or beta release.
-  releaser calendar.rc     [calver] Creates a calendar or rc release.
-  releaser dev             [calver] Creates a dev release.
-  releaser alpha           [calver] Creates an alpha release.
-  releaser beta            [calver] Creates a beta release.
-  releaser rc              [calver] Creates an rc release.
+  releaser calendar        [calver] Updates date based on the current date time.
+  releaser calendar.dev    [calver] Updates calendar tags and adds modifier tag.
+  releaser calendar.alpha  [calver] Updates calendar tags and adds modifier tag.
+  releaser calendar.beta   [calver] Updates calendar tags and adds modifier tag.
+  releaser calendar.rc     [calver] Updates calendar tags and adds modifier tag.
+  releaser dev             [calver] Increments the dev tag.
+  releaser alpha           [calver] Increments the alpha tag.
+  releaser beta            [calver] Increments the beta tag.
+  releaser rc              [calver] Increments the rc tag.
+  releaser major           [semver, calver] Increments major tag.
+  releaser minor           [semver, calver] Increments minor tag.
+  releaser patch           [semver, calver] Increments patch tag.
+  releaser major.dev       [calver] Increments major tag and adds modifier.
+  releaser major.alpha     [calver] Increments major tag and adds modifier.
+  releaser major.beta      [calver] Increments major tag and adds modifier.
+  releaser major.rc        [calver] Increments major tag and adds modifier.
+  releaser minor.dev       [calver] Increments minor tag and adds modifier.
+  releaser minor.alpha     [calver] Increments minor tag and adds modifier.
+  releaser minor.beta      [calver] Increments minor tag and adds modifier.
+  releaser minor.rc        [calver] Increments minor tag and adds modifier.
+  releaser patch.dev       [calver] Increments patch tag and adds modifier.
+  releaser patch.alpha     [calver] Increments patch tag and adds modifier.
+  releaser patch.beta      [calver] Increments patch tag and adds modifier.
+  releaser patch.rc        [calver] Increments patch tag and adds modifier.
+  releaser premajor.dev    [semver] Creates new major version with a dev tag.
+  releaser premajor.alpha  [semver] Creates new major version with an alpha tag.
+  releaser premajor.beta   [semver] Creates new major version with a beta tag.
+  releaser premajor.rc     [semver] Creates new major version with an rc tag.
+  releaser preminor.dev    [semver] Creates a new minor version with a dev tag.
+  releaser preminor.alpha  [semver] Creates a new minor version with an alpha
+                           tag.
+  releaser preminor.beta   [semver] Creates a new minor version with a beta tag.
+  releaser preminor.rc     [semver] Creates a new minor version with an rc tag.
+  releaser prepatch.dev    [semver] Creates a new patch version with a dev tag.
+  releaser prepatch.alpha  [semver] Creates a new patch version with an alpha
+                           tag.
+  releaser prepatch.beta   [semver] Creates a new patch version with a beta tag.
+  releaser prepatch.rc     [semver] Creates a new patch version with an rc tag.
+  releaser prerelease      [semver] Increments the modifier tag.
 
 Options:
   --version  Show version number                                       [boolean]
