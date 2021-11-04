@@ -1,20 +1,38 @@
 const semver = require('semver')
 const calver = require('calver')
 
-function generateNextTag(level, currentTag, scheme, calverFormat, {forceCalverFormat}) {
+function generateNextTag(level, currentTag, scheme, calverFormat, opts={}) {
+  const forceCalverFormat = opts.forceCalverFormat || false
+  const modifierTags = ['rc', 'beta', 'alpha', 'dev']
   let nextTag = null
 
-  if (forceCalverFormat) {
-    nextTag = calver.init(calverFormat)
-    nextTag = calver.inc(calverFormat, nextTag, level)
+  if (scheme == 'semver') {
+    const levels = ['major', 'minor', 'patch']
+    if (currentTag == '') currentTag = '0.0.0'
+    if (modifierTags.indexOf(level) !== -1) {
+      nextTag = semver.inc(currentTag, 'prerelease', level)
+    }
+    else if (levels.indexOf(level) !== -1) {
+      nextTag = semver.inc(currentTag, level)
+    }
+    else if (level.indexOf('.') !== -1) {
+      nextTag = semver.inc(currentTag, level.split('.')[0], level.split('.')[1])
+    }
+    else {
+      nextTag = semver.inc(currentTag, level)
+    }
   }
-  else if (currentTag == '') {
-    if (scheme == 'semver') nextTag = '0.1.0'
-    else nextTag = calver.init(calverFormat)
-  }
-  else {
-    if (scheme == 'semver') nextTag = semver.inc(currentTag, level)
-    else nextTag = calver.inc(calverFormat, currentTag, level)
+
+  if (scheme == 'calver') {
+    if (forceCalverFormat) {
+      nextTag = calver.inc(calverFormat, '', level)
+    }
+    else if (currentTag == '') {
+      nextTag = calver.inc(calverFormat, '', level)
+    }
+    else {
+      nextTag = calver.inc(calverFormat, currentTag, level)
+    }
   }
 
   return nextTag

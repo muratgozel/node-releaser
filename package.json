@@ -1,13 +1,13 @@
 {
   "name": "node-releaser",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.",
   "main": "src/index.js",
   "bin": {
     "releaser": "./src/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "for i in tests/*.js; do node \"$i\"; done"
   },
   "repository": {
     "type": "git",
@@ -38,9 +38,9 @@
   },
   "homepage": "https://github.com/muratgozel/node-releaser#readme",
   "dependencies": {
-    "calver": "^21.1.5",
+    "calver": "^21.11.3",
     "colors": "^1.4.0",
-    "convict": "^5.2.1",
+    "convict": "^6.2.1",
     "gl-got": "^9.0.3",
     "got": "^11.8.2",
     "octokit": "^1.5.0",
