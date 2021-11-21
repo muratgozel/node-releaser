@@ -10,6 +10,12 @@ function registerLevelPositioners(yargs) {
     describe: 'Commit message. Can be specified multiple times to create multiline commit messages.'
   })
 
+  yargs.positional('current-tag', {
+    type: 'string',
+    default: '',
+    describe: 'Take this as current tag. It won\'t query git for the current tag.'
+  })
+
   yargs.positional('force-calver-format', {
     type: 'boolean',
     default: false,

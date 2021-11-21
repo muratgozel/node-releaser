@@ -281,6 +281,12 @@ Specify multiple messages:
 releaser minor -m "fixed something" -m "added something."
 ```
 
+Specify a tag as the current tag:
+```sh
+releaser major -m "initial release." --current-tag v3.0.0
+```
+Normally, module query git to find the current tag.
+
 ## Default Plugins
 1. **Github**: Github plugin is for creating releases on Github.
 2. **Gitlab**: Gitlab plugin is for creating releases on Gitlab.

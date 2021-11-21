@@ -1,7 +1,7 @@
 const colors = require('colors/safe')
 
 module.exports = async function createReleaseByLevel(level, ctx) {
-  const {git, config, versioning, plugins, messages, forceCalverFormat} = ctx
+  const {git, config, versioning, plugins, messages, forceCalverFormat, inputCurrentTag} = ctx
 
   git.verifyCodebase()
 
@@ -12,7 +12,7 @@ module.exports = async function createReleaseByLevel(level, ctx) {
 
   const scheme = config.get('versioning.scheme')
   const format = config.get('versioning.format')
-  const currentTag = git.getLatestTag(scheme, format, config, versioning)
+  const currentTag = inputCurrentTag || git.getLatestTag(scheme, format, config, versioning)
   const currentTagBare = plugins.getContext().getBareVersion(currentTag)
   const nextTagBare = versioning.generateNextTag(level, currentTagBare, scheme, format, {forceCalverFormat})
   const nextTag = plugins.getContext().prefixTag(nextTagBare)
