@@ -1,10 +1,12 @@
 # node-releaser
-Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.
+Automated versioning and package publishing tool. Supports [semver](https://semver.org) and [calver](https://calver.org). Extendible with plugins.
 
 ![NPM](https://img.shields.io/npm/l/node-releaser)
 [![npm version](https://badge.fury.io/js/node-releaser.svg)](https://badge.fury.io/js/node-releaser)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/node-releaser)
 ![npm](https://img.shields.io/npm/dy/node-releaser)
+
+It is simply: `releaser patch -m "commit message"` and you get this: ![](github-sample.png "Github Sample graphic")
 
 ## Introduction
 `releaser` is based on `git` and `node.js`. Any developer who works with `git` can use it to automate releasing and publishing process of any project. Here is a summary of what can be done with releaser:
@@ -28,7 +30,34 @@ releaser --version
 ```
 
 ### Create A Configuration File (.releaser.json)
-First, this is the schema to write valid configuration files:
+In your project folder, create a configuration file. A sample could be:
+```json
+{
+  "versioning": {
+    "scheme": "semver"
+  },
+  "npm": {
+    "enable": true,
+    "updatePkgJson": true,
+    "publish": true
+  },
+  "github": {
+    "enable": true,
+    "release": true
+  }
+}
+```
+This configuration will:
+1. Generate the next version according to **semver** scheme,
+2. Prefix the version number with **v** (because its by default),
+3. Updates package.json version field (because npm.updatePkgJson enabled),
+4. Push the changes to the remote repository (because github.enabled),
+5. Creates a release on Github (because github.release),
+6. Publishes the package on npm.
+
+In order to Github releasing work we need to specify [Github access token](https://github.com/settings/tokens). It can be specified as env var `RELEASER_GITHUB_TOKEN=...` or a cli arg `--github-token` while executing the command. Optionally a credential management service such as [Doppler](https://www.doppler.com) can be used.
+
+Releaser has various config options. This is the schema to write valid configuration files:
 ```js
 versioning: {
   scheme: {
@@ -192,36 +221,27 @@ cmd: {
   }
 }
 ```
-An example `.releaser.json` file could be:
-```json
-{
-  "versioning": {
-    "scheme": "semver"
-  },
-  "npm": {
-    "enable": true,
-    "updatePkgJson": true,
-    "publish": true
-  },
-  "github": {
-    "enable": true,
-    "release": true
-  }
-}
-```
-This configuration will:
-1. Generate the next version according to **semver** scheme,
-2. Prefix the version number with **v** (because its by default),
-3. Updates package.json's version field (because npm.updatePkgJson enabled),
-3. Push the changes to the remote repository (because github.enabled),
-4. Creates a release on Github (because github.release),
-5. Publishes the package on npm.
-We didn't specify `github.token` because we can not put it inside file of course. We will specify it as env var `RELEASER_GITHUB_TOKEN=...` or a cli arg `--github-token`.
 
 ### Running releaser
-Releaser only need two things in order to run. The level and commit messages. Level is the version level. major, minor etc. in semver or calendar, calendar.major etc. in calver. Commit messages are one or more -m flags that explain the changes in the codebase in that release.
+Releaser only need two things in order to run. The level and commit messages. Level is the version level. major, minor etc. for **semver** or calendar, calendar.major etc. for **calver**. Commit messages are one or more -m flags that explain the changes in the codebase in that release.
 
-Look at available commands:
+Make a release:
+```sh
+releaser major -m "initial release."
+```
+
+Specify multiple messages:
+```sh
+releaser minor -m "fixed something" -m "added something."
+```
+
+Specify a tag as the current tag:
+```sh
+releaser major -m "initial release." --current-tag v3.0.0
+```
+Normally, releaser query git to find the current tag.
+
+Available commands for reference:
 ```sh
 releaser <cmd> [args]
 
@@ -270,22 +290,6 @@ Options:
   --version  Show version number                                       [boolean]
   --help     Show help                                                 [boolean]
 ```
-
-Make a release:
-```sh
-releaser major -m "initial release."
-```
-
-Specify multiple messages:
-```sh
-releaser minor -m "fixed something" -m "added something."
-```
-
-Specify a tag as the current tag:
-```sh
-releaser major -m "initial release." --current-tag v3.0.0
-```
-Normally, module query git to find the current tag.
 
 ## Default Plugins
 1. **Github**: Github plugin is for creating releases on Github.

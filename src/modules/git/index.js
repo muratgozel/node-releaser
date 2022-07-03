@@ -95,16 +95,14 @@ function push(nextTag, messages) {
   const branch = getBranchName()
   const commands = [
     'git tag -a "' + nextTag + '" ' + msgscmd,
-    'git add .',
+    'git add --ignore-removal .',
     'git commit ' + msgscmd,
     'git push --atomic origin ' + branch + ' ' + nextTag + ''
   ]
-  for (let i = 0; i < commands.length; i++) {
-    try {
-      execSync(commands[i], {stdio: 'inherit', encoding: 'utf8'})
-    } catch (e) {
-      throw e
-    }
+  try {
+    execSync(commands.join(' && '), {stdio: 'inherit', encoding: 'utf8'})
+  } catch (e) {
+    throw e
   }
 }
 
