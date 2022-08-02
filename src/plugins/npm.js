@@ -19,8 +19,8 @@ function npm() {
   }
 
   async function beforePush(nextTag) {
-    console.log(semver.coerce(nextTag));
-    updatePkgJson('version', semver.coerce(nextTag))
+    console.log(semver.valid(semver.coerce(nextTag)));
+    updatePkgJson('version', semver.valid(semver.coerce(nextTag)))
   }
 
   async function afterPush() {
