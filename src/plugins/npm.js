@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const {execSync} = require('child_process')
+const semver = require('semver')
 
 function npm() {
   const store = {
@@ -18,7 +19,7 @@ function npm() {
   }
 
   async function beforePush(nextTag) {
-    updatePkgJson('version', this.getBareVersion(nextTag))
+    updatePkgJson('version', semver.coerce(nextTag))
   }
 
   async function afterPush() {
