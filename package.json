@@ -4,13 +4,13 @@
     "options": {},
     "loose": false,
     "includePrerelease": false,
-    "raw": "0.7.4",
+    "raw": "0.7.5",
     "major": 0,
     "minor": 7,
-    "patch": 4,
+    "patch": 5,
     "prerelease": [],
     "build": [],
-    "version": "0.7.4"
+    "version": "0.7.5"
   },
   "description": "Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.",
   "main": "src/index.js",
