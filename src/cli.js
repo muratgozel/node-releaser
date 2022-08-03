@@ -31,6 +31,18 @@ yargs
     async argv => {await lib.createReleaseByLevelCLI('calendar', argv)}
   )
   .command(
+    'calendar.major', '[calver] Updates calendar and major tags.', registerLevelPositioners,
+    async argv => {await lib.createReleaseByLevelCLI('calendar.major', argv)}
+  )
+  .command(
+    'calendar.minor', '[calver] Updates calendar and minor tags.', registerLevelPositioners,
+    async argv => {await lib.createReleaseByLevelCLI('calendar.minor', argv)}
+  )
+  .command(
+    'calendar.patch', '[calver] Updates calendar and patch tags.', registerLevelPositioners,
+    async argv => {await lib.createReleaseByLevelCLI('calendar.patch', argv)}
+  )
+  .command(
     'calendar.dev', '[calver] Updates calendar tags and adds modifier tag.', registerLevelPositioners,
     async argv => {await lib.createReleaseByLevelCLI('calendar.dev', argv)}
   )

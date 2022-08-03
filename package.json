@@ -1,6 +1,6 @@
 {
   "name": "node-releaser",
-  "version": "0.7.7",
+  "version": "0.8.0",
   "description": "Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.",
   "main": "src/index.js",
   "bin": {
@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/muratgozel/node-releaser#readme",
   "dependencies": {
-    "calver": "^21.11.3",
+    "calver": "^22.8.3",
     "colors": "^1.4.0",
     "convict": "^6.2.1",
     "gl-got": "^9.0.3",

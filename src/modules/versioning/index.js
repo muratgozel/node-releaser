@@ -27,9 +27,6 @@ function generateNextTag(level, currentTag, scheme, calverFormat, opts={}) {
     if (forceCalverFormat) {
       nextTag = calver.inc(calverFormat, '', level)
     }
-    else if (currentTag == '') {
-      nextTag = calver.inc(calverFormat, '', level)
-    }
     else {
       nextTag = calver.inc(calverFormat, currentTag, level)
     }
@@ -44,12 +41,7 @@ function isValid(tag, scheme, format='') {
   }
 
   if (scheme == 'calver') {
-    try {
-      calver.valid(format, tag)
-      return true
-    } catch (e) {
-      return false
-    }
+    return calver.isValid(format, tag)
   }
 }
 

@@ -247,6 +247,9 @@ releaser <cmd> [args]
 
 Commands:
   releaser calendar        [calver] Updates date based on the current date time.
+  releaser calendar.major  [calver] Updates calendar and major tags.
+  releaser calendar.minor  [calver] Updates calendar and minor tags.
+  releaser calendar.patch  [calver] Updates calendar and patch tags.
   releaser calendar.dev    [calver] Updates calendar tags and adds modifier tag.
   releaser calendar.alpha  [calver] Updates calendar tags and adds modifier tag.
   releaser calendar.beta   [calver] Updates calendar tags and adds modifier tag.
