@@ -9,6 +9,7 @@ function generateNextTag(level, currentTag, scheme, calverFormat, opts={}) {
   if (scheme == 'semver') {
     const levels = ['major', 'minor', 'patch']
     if (currentTag == '') currentTag = '0.0.0'
+
     if (modifierTags.indexOf(level) !== -1) {
       nextTag = semver.inc(currentTag, 'prerelease', level)
     }

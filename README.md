@@ -16,6 +16,7 @@ It is simply: `releaser patch -m "commit message"` and you get this: ![](github-
 4. Automated docker image publishing. It builds the image with new version number and `latest` tags and push it to docker hub or any other docker image registry.
 5. Powerful configuration management thanks to [convict](https://github.com/mozilla/node-convict/tree/master/packages/convict). Configuration can be load from a file, env vars and cli args at the same time.
 6. Extendible through plugins. You can write a changelog plugin for example that pushes commit messages to a changelog file as you release.
+7. All of the above are optional and can be configured.
 
 ## Install
 Install it globally:
@@ -29,17 +30,29 @@ Make sure `releaser` is available:
 releaser --version
 ```
 
-### Create A Configuration File (.releaser.json)
-In your project folder, create a configuration file. A sample could be:
+Without a configuration, **releaser** auto-detects if your repository hosted on **Github** or **Gitlab** and automatically enables releasing. It also detects **package.json** and enables updating version field. Other defaults are versioning scheme and version prefix which are **semver** and **v** by default.
+
+✅ For auto releasing on **Github** or **Gitlab** to work, you need to set one of the `GITHUB_TOKEN` or `GITLAB_TOKEN` environment variables. These are personal access tokens that you can create on those services if you haven't yet.
+
+Let's say you have a project hosted on **Github** and has **package.json**. As initial commit you would do:
+```sh
+releaser premajor.beta -m "my initial commit"
+```
+and releaser would create a version tag **v1.0.0-beta.0**, a release on **Github** and update the version field of **package.json** to v1.0.0-beta.0. This goes on in the same way in the next commits:
+```sh
+releaser beta -m "updated this" -m "updated that" # v1.0.0-beta.1
+releaser major -m "msg" # v1.0.0
+```
+
+### More Control With A Configuration File
+There are two places to configure the releaser. First one is `releaser.json` file and the second one is `releaser` property inside `package.json`.
+
+Let's say I have a Github project with package.json and I don't want to prefix versions with `v` and I don't want Github releases. In this case, I would create `releaser.json` with the following:
+
 ```json
 {
   "versioning": {
-    "scheme": "semver"
-  },
-  "npm": {
-    "enable": true,
-    "updatePkgJson": true,
-    "publish": true
+    "prefix": ""
   },
   "github": {
     "enable": true,
@@ -47,251 +60,56 @@ In your project folder, create a configuration file. A sample could be:
   }
 }
 ```
-This configuration will:
-1. Generate the next version according to **semver** scheme,
-2. Prefix the version number with **v** (because its by default),
-3. Updates package.json version field (because npm.updatePkgJson enabled),
-4. Push the changes to the remote repository (because github.enabled),
-5. Creates a release on Github (because github.release),
-6. Publishes the package on npm.
 
-In order to Github releasing work we need to specify [Github access token](https://github.com/settings/tokens). It can be specified as env var `RELEASER_GITHUB_TOKEN=...` or a cli arg `--github-token` while executing the command. Optionally a credential management service such as [Doppler](https://www.doppler.com) can be used.
+We could have just set `enable: false` for `github` to completely disable it. Just disabled `release` since there could be other Github features one can use)
 
-Releaser has various config options. This is the schema to write valid configuration files:
-```js
-versioning: {
-  scheme: {
-    doc: 'Versioning scheme. semver or calver.',
-    format: String,
-    default: 'semver',
-    env: 'RELEASER_VERSIONING_SCHEME',
-    arg: 'versioning-scheme'
-  },
-  format: {
-    doc: 'Calver versioning format.',
-    format: String,
-    default: '',
-    env: 'RELEASER_VERSIONING_FORMAT',
-    arg: 'versioning-format'
-  },
-  prefix: {
-    doc: 'Tag prefix.',
-    format: String,
-    default: 'v',
-    env: 'RELEASER_VERSIONING_PREFIX',
-    arg: 'versioning-prefix'
-  }
-},
-npm: {
-  enable: {
-    doc: 'Enables npm plugin.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_NPM_ENABLE',
-    arg: 'npm-enable'
-  },
-  updatePkgJson: {
-    doc: 'Updates version number in the package.json file',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_UPDATE_PKG_JSON',
-    arg: 'npm-updatepkgjson'
-  },
-  publish: {
-    doc: 'Publish on npm.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_NPM_PUBLISH',
-    arg: 'npm-publish'
-  },
-  publishCmdSuffix: {
-    doc: 'This will be added to the command "npm publish".',
-    format: String,
-    default: '',
-    env: 'RELEASER_NPM_PUBLISHCMDSUFFIX',
-    arg: 'npm-publishcmdsuffix'
-  }
-},
-github: {
-  enable: {
-    doc: 'Enables github plugin.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_GITHUB_ENABLE',
-    arg: 'github-enable'
-  },
-  release: {
-    doc: 'Make a release on github.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_GITHUB_RELEASE',
-    arg: 'github-release'
-  },
-  token: {
-    doc: 'Github personel access token.',
-    format: String,
-    default: '',
-    env: 'RELEASER_GITHUB_TOKEN',
-    arg: 'github-token'
-  }
-},
-gitlab: {
-  enable: {
-    doc: 'Enables gitlab plugin.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_GITLAB_ENABLE',
-    arg: 'gitlab-enable'
-  },
-  release: {
-    doc: 'Make a release on gitlab.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_GITLAB_RELEASE',
-    arg: 'gitlab-release'
-  },
-  token: {
-    doc: 'Gitlab personel access token.',
-    format: String,
-    default: '',
-    env: 'RELEASER_GITLAB_TOKEN',
-    arg: 'gitlab-token'
-  }
-},
-docker: {
-  enable: {
-    doc: 'Enables docker plugin.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_DOCKER_ENABLE',
-    arg: 'docker-enable'
-  },
-  user: {
-    doc: 'Docker hub user name.',
-    format: String,
-    default: '',
-    env: 'RELEASER_DOCKER_USER',
-    arg: 'docker-user'
-  },
-  repo: {
-    doc: 'The name of the repo on docker hub.',
-    format: String,
-    default: '',
-    env: 'RELEASER_DOCKER_REPO',
-    arg: 'docker-repo'
-  },
-  registry: {
-    doc: 'Container registry host. ghcr.io for example. Default is Docker Hub.',
-    format: String,
-    default: '',
-    env: 'RELEASER_DOCKER_REGISTRY',
-    arg: 'docker-registry'
-  },
-  build: {
-    path: {
-      doc: 'Docker build context.',
-      format: String,
-      default: '.',
-      env: 'RELEASER_DOCKER_BUILD_PATH',
-      arg: 'docker-build-path'
-    }
-  }
-}
-cmd: {
-  enable: {
-    doc: 'Enables command plugin.',
-    format: Boolean,
-    default: false,
-    env: 'RELEASER_CMD_ENABLE',
-    arg: 'cmd-enable'
-  },
-  beforePush: {
-    doc: 'Shell command that runs before pushing changes to the remote.',
-    format: String,
-    default: '',
-    env: 'RELEASER_CMD_BEFOREPUSH',
-    arg: 'cmd-beforepush'
-  },
-  afterPush: {
-    doc: 'Shell command that runs after pushing changes to the remote.',
-    format: String,
-    default: '',
-    env: 'RELEASER_CMD_AFTERPUSH',
-    arg: 'cmd-afterpush'
+Similarly, we can play with `npm` features:
+
+```json
+{
+  "npm": {
+    "enable": true,
+    "updatePkgJson": true,
+    "publish": true,
+    "publishCmdSuffix": "--access=public"
   }
 }
 ```
 
-### Running releaser
-Releaser only need two things in order to run. The level and commit messages. Level is the version level. major, minor etc. for **semver** or calendar, calendar.major etc. for **calver**. Commit messages are one or more -m flags that explain the changes in the codebase in that release.
+In the example above, we tell releaser to update version field in package.json, publish package to the npm and add a command line flag to the publish command. It becomes `npm publish --access=public`. If we set `enable` to `false` then none of these happen.
 
-Make a release:
+### Configuration Schema
+Releaser has many configuration options. You can browse them [here](src/config/schema.js).
+
+### Example With Calendar Versioning
+Releaser works seamlessly with `calver` as well. To configure releaser to use `calver` instead of `semver`:
+```json
+{
+  "versioning": {
+    "scheme": "calver",
+    "format": "yyyy.mm.minor"
+  }
+}
+```
+The property `format` is specific to `calver` and you can look at [here](https://github.com/muratgozel/node-calver) to get more information about it.
+
+As an example, you would do:
 ```sh
-releaser major -m "initial release."
+releaser calendar.beta -m "my initial commit" # v2021.1.0-beta.0 (assuming current date is 2021.1)
+releaser beta -m "updated this" -m "updated that" # v2021.1.0-beta.1
+releaser calendar -m "msg" # v2021.1.0
 ```
 
-Specify multiple messages:
+### Command Line Flags
+The level of the commit must be specified as the first argument. Like `major`, `beta`, etc. You can view the list of available levels by executing help command:
 ```sh
-releaser minor -m "fixed something" -m "added something."
+releaser --help
 ```
+Some of them applies to semver, some to calver and some to both.
 
-Specify a tag as the current tag:
+To ignore the searching for the current version in git history you can specify it to calculate the next version:
 ```sh
 releaser major -m "initial release." --current-tag v3.0.0
-```
-Normally, releaser query git to find the current tag.
-
-Available commands for reference:
-```sh
-releaser <cmd> [args]
-
-Commands:
-  releaser calendar        [calver] Updates date based on the current date time.
-  releaser calendar.major  [calver] Updates calendar and major tags.
-  releaser calendar.minor  [calver] Updates calendar and minor tags.
-  releaser calendar.patch  [calver] Updates calendar and patch tags.
-  releaser calendar.dev    [calver] Updates calendar tags and adds modifier tag.
-  releaser calendar.alpha  [calver] Updates calendar tags and adds modifier tag.
-  releaser calendar.beta   [calver] Updates calendar tags and adds modifier tag.
-  releaser calendar.rc     [calver] Updates calendar tags and adds modifier tag.
-  releaser dev             [calver] Increments the dev tag.
-  releaser alpha           [calver] Increments the alpha tag.
-  releaser beta            [calver] Increments the beta tag.
-  releaser rc              [calver] Increments the rc tag.
-  releaser major           [semver, calver] Increments major tag.
-  releaser minor           [semver, calver] Increments minor tag.
-  releaser patch           [semver, calver] Increments patch tag.
-  releaser major.dev       [calver] Increments major tag and adds modifier.
-  releaser major.alpha     [calver] Increments major tag and adds modifier.
-  releaser major.beta      [calver] Increments major tag and adds modifier.
-  releaser major.rc        [calver] Increments major tag and adds modifier.
-  releaser minor.dev       [calver] Increments minor tag and adds modifier.
-  releaser minor.alpha     [calver] Increments minor tag and adds modifier.
-  releaser minor.beta      [calver] Increments minor tag and adds modifier.
-  releaser minor.rc        [calver] Increments minor tag and adds modifier.
-  releaser patch.dev       [calver] Increments patch tag and adds modifier.
-  releaser patch.alpha     [calver] Increments patch tag and adds modifier.
-  releaser patch.beta      [calver] Increments patch tag and adds modifier.
-  releaser patch.rc        [calver] Increments patch tag and adds modifier.
-  releaser premajor.dev    [semver] Creates new major version with a dev tag.
-  releaser premajor.alpha  [semver] Creates new major version with an alpha tag.
-  releaser premajor.beta   [semver] Creates new major version with a beta tag.
-  releaser premajor.rc     [semver] Creates new major version with an rc tag.
-  releaser preminor.dev    [semver] Creates a new minor version with a dev tag.
-  releaser preminor.alpha  [semver] Creates a new minor version with an alpha
-                           tag.
-  releaser preminor.beta   [semver] Creates a new minor version with a beta tag.
-  releaser preminor.rc     [semver] Creates a new minor version with an rc tag.
-  releaser prepatch.dev    [semver] Creates a new patch version with a dev tag.
-  releaser prepatch.alpha  [semver] Creates a new patch version with an alpha
-                           tag.
-  releaser prepatch.beta   [semver] Creates a new patch version with a beta tag.
-  releaser prepatch.rc     [semver] Creates a new patch version with an rc tag.
-  releaser prerelease      [semver] Increments the modifier tag.
-
-Options:
-  --version  Show version number                                       [boolean]
-  --help     Show help                                                 [boolean]
 ```
 
 ## Default Plugins

@@ -59,19 +59,19 @@ yargs
     async argv => {await lib.createReleaseByLevelCLI('calendar.rc', argv)}
   )
   .command(
-    'dev', '[calver] Increments the dev tag.', registerLevelPositioners,
+    'dev', '[semver, calver] Increments the dev tag.', registerLevelPositioners,
     async argv => {await lib.createReleaseByLevelCLI('dev', argv)}
   )
   .command(
-    'alpha', '[calver] Increments the alpha tag.', registerLevelPositioners,
+    'alpha', '[semver, calver] Increments the alpha tag.', registerLevelPositioners,
     async argv => {await lib.createReleaseByLevelCLI('alpha', argv)}
   )
   .command(
-    'beta', '[calver] Increments the beta tag.', registerLevelPositioners,
+    'beta', '[semver, calver] Increments the beta tag.', registerLevelPositioners,
     async argv => {await lib.createReleaseByLevelCLI('beta', argv)}
   )
   .command(
-    'rc', '[calver] Increments the rc tag.', registerLevelPositioners,
+    'rc', '[semver, calver] Increments the rc tag.', registerLevelPositioners,
     async argv => {await lib.createReleaseByLevelCLI('rc', argv)}
   )
   .command(

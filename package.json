@@ -1,6 +1,6 @@
 {
   "name": "node-releaser",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.",
   "main": "src/index.js",
   "bin": {

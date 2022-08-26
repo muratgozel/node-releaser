@@ -106,11 +106,32 @@ function push(nextTag, messages) {
   }
 }
 
+function findServiceProvider() {
+  const output = execSync('git ls-remote --get-url')
+    .toString()
+    .trim()
+    .split(/[\n\r]/)
+  if (!output || output.length < 1) {
+    return '';
+  }
+
+  if (output[0].indexOf('@github.com:') !== -1) {
+    return 'github'
+  }
+
+  if (output[0].indexOf('@gitlab.com:') !== -1) {
+    return 'gitlab'
+  }
+
+  return ''
+}
+
 module.exports = {
   verifyCodebase: verifyCodebase,
   getLatestTag: getLatestTag,
   getChangelogForTag: getChangelogForTag,
   getBranchName: getBranchName,
   getRemoteOrigin: getRemoteOrigin,
-  push: push
+  push: push,
+  findServiceProvider: findServiceProvider
 }

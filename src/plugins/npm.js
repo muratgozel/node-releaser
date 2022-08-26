@@ -39,10 +39,20 @@ function npm() {
     fs.writeFileSync(store.filepath, JSON.stringify(store.obj, null, 2))
   }
 
+  function hasPkgJson() {
+    return fs.existsSync(store.filepath)
+  }
+
+  function getPkgJson() {
+    return hasPkgJson() ? JSON.parse( fs.readFileSync(store.filepath, 'utf8') ) : {}
+  }
+
   return {
     initiated: initiated,
     beforePush: beforePush,
-    afterPush: afterPush
+    afterPush: afterPush,
+    hasPkgJson: hasPkgJson,
+    getPkgJson: getPkgJson
   }
 }
 
