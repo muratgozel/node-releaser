@@ -19,7 +19,8 @@ function npm() {
   }
 
   async function beforePush(nextTag) {
-    updatePkgJson('version', semver.valid(semver.coerce(nextTag)))
+    const version = this.config.get('versioning.scheme') === 'calver' ? semver.valid(semver.coerce(nextTag)) : nextTag
+    updatePkgJson('version', version)
   }
 
   async function afterPush() {
