@@ -1,5 +1,5 @@
 const colors = require('colors/safe')
-const gitlabGot = require('gl-got')
+const got = require('got')
 
 function gitlab() {
   const store = {
@@ -22,14 +22,17 @@ function gitlab() {
 
     const body = changelog.map(item => '- ' + item).join("\r\n")
     const payload = {
-      baseUrl: 'https://gitlab.com/api/v4',
-      token: this.config.get('gitlab.token'),
-      body: {
+      method: 'POST',
+      headers: {
+        'PRIVATE-TOKEN': this.config.get('gitlab.token'),
+        'Content-Type': 'application/json'
+      },
+      json: {
         tag_name: tag,
         description: body
       }
     }
-    const resp = await gitlabGot('/projects/' + store.path + '/releases', payload)
+    const resp = await got(`https://gitlab.example.com/api/v4/projects/${store.path}/releases`, payload).json()
     try {
       if (resp.body.tag_name != tag) {
         console.log(resp.body)

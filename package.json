@@ -1,6 +1,6 @@
 {
   "name": "node-releaser",
-  "version": "v1.0.1",
+  "version": "v1.0.2",
   "description": "Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.",
   "main": "src/index.js",
   "bin": {
@@ -41,10 +41,12 @@
     "calver": "^22.8.3",
     "colors": "^1.4.0",
     "convict": "^6.2.1",
-    "gl-got": "^9.0.3",
-    "got": "^11.8.2",
-    "octokit": "^1.5.0",
+    "got": "^12.5.2",
+    "octokit": "^2.0.9",
     "semver": "^7.3.5",
     "yargs": "^17.1.1"
+  },
+  "devDependencies": {
+    "node-releaser": "^1.0.1"
   }
 }
