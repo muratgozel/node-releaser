@@ -11,8 +11,10 @@ import commit from "./actions/commit.js";
 import push from "./actions/push.js";
 import release from "./actions/release.js";
 // import docker from './actions/docker.js';
-import "../lib/events/afterPush.js";
 import "../lib/events/beforeCommit.js";
+import "../lib/events/afterCommit.js";
+import "../lib/events/beforePush.js";
+import "../lib/events/afterPush.js";
 
 const pkgpath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../package.json')
 const pkg = JSON.parse( await readFile(pkgpath, {encoding: 'utf8'}) )
