@@ -1,182 +1,178 @@
 # node-releaser
-Automated versioning and package publishing tool. Supports [semver](https://semver.org) and [calver](https://calver.org). Extendible with plugins.
+Software versioning, releasing and publishing tool.
 
 ![NPM](https://img.shields.io/npm/l/node-releaser)
 [![npm version](https://badge.fury.io/js/node-releaser.svg)](https://badge.fury.io/js/node-releaser)
-![npm bundle size](https://img.shields.io/bundlephobia/min/node-releaser)
-![npm](https://img.shields.io/npm/dy/node-releaser)
 
-It is simply: `releaser patch -m "commit message"` and you get this: ![](github-sample.png "Github Sample graphic")
-
-## Introduction
-`releaser` is based on `git` and `node.js`. Any developer who works with `git` can use it to automate releasing and publishing process of any project. Here is a summary of what can be done with releaser:
-1. Use [semver](https://github.com/npm/node-semver) or [calver](https://github.com/muratgozel/node-calver) in your project. New versions computed automatically as you release. This feature based on git tags.
-2. It works in sync with the remote code repositories. Supported git services are **Github** and **Gitlab** as you can see in the `src/plugins` folder.
-3. Automated **npm** package management. New releases automatically be pushed to npm and updates the version field in package.json file.
-4. Automated docker image publishing. It builds the image with new version number and `latest` tags and push it to docker hub or any other docker image registry.
-5. Powerful configuration management thanks to [convict](https://github.com/mozilla/node-convict/tree/master/packages/convict). Configuration can be load from a file, env vars and cli args at the same time.
-6. Extendible through plugins. You can write a changelog plugin for example that pushes commit messages to a changelog file as you release.
-7. All of the above are optional and can be configured.
+## Features
+1. Supports [semver](https://semver.org) and [calver](https://calver.org) based versioning.
+2. Auto-create Github/Gitlab releases.
+3. Auto-manage package.json's version field and optional npm publish option.
+4. Auto-publishes your docker containers as you release.
+5. Interactive cli with `--non-interactive` option.
 
 ## Install
-Install it globally:
 ```sh
+# install globally
 npm i -g node-releaser
+# or locally
+npm i node-releaser 
 ```
 
-## Usage (CLI)
-Make sure `releaser` is available:
+## Use
 ```sh
-releaser --version
+# if you installed globally
+releaser [command] [options]
+# or locally
+npx releaser [command] [options]
 ```
 
-Without a configuration, **releaser** auto-detects if your repository hosted on **Github** or **Gitlab** and automatically enables releasing. It also detects **package.json** and enables updating version field. Other defaults are versioning scheme and version prefix which are **semver** and **v** by default.
-
-✅ For auto releasing on **Github** or **Gitlab** to work, you need to set one of the `GITHUB_TOKEN` or `GITLAB_TOKEN` environment variables. These are personal access tokens that you can create on those services if you haven't yet.
-
-Let's say you have a project hosted on **Github** and has **package.json**. As initial commit you would do:
+## Quickstart
+In any git based project, run:
 ```sh
-releaser premajor.beta -m "my initial commit"
+releaser release -l patch -m "fix: something" -m "feat: a new feature."
 ```
-and releaser would create a version tag **v1.0.0-beta.0**, a release on **Github** and update the version field of **package.json** to v1.0.0-beta.0. This goes on in the same way in the next commits:
+This command validates your codebase first, runs interactive configuration wizard if there is no configuration defined, commit+tag+push your changes and calls relevant hooks while doing all of this.
+
+It checks project's git history, git remotes, package.json and Dockerfile to offer you the essential functionality such as generating next versions, publishing npm package versions, creating releases on Github or Gitlab, pushing container images to a docker registry.
+
+All features can be enabled/disabled through a configuration file. It is either `.releaser.json` or `releaser` property inside `package.json`. Interactive configuration wizard will help you to create this configuration and you can edit anytime as you wish.
+
+For releasing on Github or Gitlab to work, the `GITHUB_TOKEN` or `GITLAB_TOKEN` environment variables has to be set. These are personal access tokens that you can create from their website.
+
+## Example Scenario: npm Packages
+Let's say you are making a node.js module to help devs in some way and you decided to host it on Github and serve via npm.
+
+On initial release you would do:
 ```sh
-releaser beta -m "updated this" -m "updated that" # v1.0.0-beta.1
-releaser major -m "msg" # v1.0.0
+releaser release -l premajor.beta -m "initial release."
+```
+This command will show you the interactive configuration wizard and after configuration, it commits your changes, creates a git tag **v1.0.0-beta.0**, creates a release on Github and publishes your package on npm, in a default configuration behaviour.
+
+You would do a few more beta updates and eventually release the major release:
+```sh
+releaser release -l beta -m "another beta release." # v1.0.0-beta.1
+releaser release -l major -m "major release!" # v1.0.0
 ```
 
-### More Control With A Configuration File
-There are two places to configure the releaser. First one is `releaser.json` file and the second one is `releaser` property inside `package.json`.
+## Example Scenario: Frontend App
+In this scenario, we are making frontend web application and want to use calendar versioning instead of semver. Our code hosted on Gitlab and we have a package.json.
 
-Let's say I have a Github project with package.json and I don't want to prefix versions with `v` and I don't want Github releases. In this case, I would create `releaser.json` with the following:
+In the first call for releaser, you will face the configuration wizard and this time we choose calver as versioning scheme instead of semver. The call is pretty much same with only `level` difference.
+```sh
+releaser release -l calendar.beta -m "initial release."
+```
+With this call, our codebase will be pushed to Gitlab, version field of package.json gets updated, a new release will be created on Gitlab.
+
+You can do more releases with no difference from previous examples:
+```sh
+releaser release -l beta -m "another beta release."
+releaser release -l calendar -m "major release!"
+```
+
+Say you want to deploy as you release. You would have a deploy script such as `./cd/deploy.js` that triggers the deploy in the cloud and all you have to do is to add a releaser `afterPush` hook that executes that script after every successful release. In `.releaser.json` file add the following:
 
 ```json
 {
-  "versioning": {
-    "prefix": ""
-  },
-  "github": {
-    "enable": true,
-    "release": true
+  "hooks": {
+    "afterPush": "node ./cd/deploy.js"
   }
 }
 ```
+With this hook, on each release, releaser also execute the `node ./cd/deploy.js` command.
 
-We could have just set `enable: false` for `github` to completely disable it. Just disabled `release` since there could be other Github features one can use)
+## More Control With A Configuration File
+Normally, configuration managed by the releaser. But there could be cases that you want to edit configuration manually.
 
-Similarly, we can play with `npm` features:
+Releaser configuration could be in `.releaser.json` or `releaser` property inside `package.json`.
+
+This is the schema of the configuration:
+```json
+{
+  "location": {"enum": [".releaser.json", "package.json"], "default": ".releaser.json"},
+  "versioningScheme": {"enum": ["semver", "calver"]},
+  "versioningFormat": {"type": "string", "format": "calverFormat"},
+  "versioningPrefix": {"type": "string", "default": ""},
+  "npmUpdatePackageVersion": {"type": "boolean", "default": false},
+  "npmPublishPackage": {"type": "boolean", "default": false},
+  "npmPublishPackageArgs": {"type": "array", "items": {"type": "string"}, "default": []},
+  "githubRelease": {"type": "boolean", "default": false},
+  "gitlabRelease": {"type": "boolean", "default": false},
+  "dockerConnectionString": {"type": "string"},
+  "dockerBuildPath": {"type": "string", "default": "."},
+  "dockerBuildArgs": {"type": "array", "items": {"type": "string"}, "default": []},
+  "dockerPushArgs": {"type": "array", "items": {"type": "string"}, "default": []},
+  "hooks": {
+    "type": "object",
+    "properties": {
+      "beforeCommit": {"type": "string"},
+      "afterCommit": {"type": "string"},
+      "beforePush": {"type": "string"},
+      "afterPush": {"type": "string"}
+    }
+  }
+}
+```
+A simple typical configuration file looks like this:
 
 ```json
 {
-  "npm": {
-    "enable": true,
-    "updatePkgJson": true,
-    "publish": true,
-    "publishCmdSuffix": "--access=public"
-  }
+  "location": ".releaser.json",
+  "versioningScheme": "semver",
+  "versioningPrefix": "v",
+  "npmUpdatePackageVersion": true,
+  "githubRelease": true
 }
 ```
 
-In the example above, we tell releaser to update version field in package.json, publish package to the npm and add a command line flag to the publish command. It becomes `npm publish --access=public`. If we set `enable` to `false` then none of these happen.
-
-### Configuration Schema
-Releaser has many configuration options. You can browse them [here](src/config/schema.js).
-
-### Example With Calendar Versioning
-Releaser works seamlessly with `calver` as well. To configure releaser to use `calver` instead of `semver`:
+## Hooks
+There are four hooks: `beforeCommit`, `afterCommit`, `beforePush` and `afterPush`. You can simply assign any command to any of these hooks via configuration file:
 ```json
 {
-  "versioning": {
-    "scheme": "calver",
-    "format": "yyyy.mm.minor"
+  "hooks": {
+    "afterPush": "node ./cd/deploy.js"
   }
 }
 ```
-The property `format` is specific to `calver` and you can look at [here](https://github.com/muratgozel/node-calver) to get more information about it.
-
-As an example, you would do:
-```sh
-releaser calendar.beta -m "my initial commit" # v2021.1.0-beta.0 (assuming current date is 2021.1)
-releaser beta -m "updated this" -m "updated that" # v2021.1.0-beta.1
-releaser calendar -m "msg" # v2021.1.0
+Additionally, there are template literals that you can pass as arguments to your commands:
+```json
+{
+  "hooks": {
+    "afterPush": "node ./cd/deploy.js --version ${tag}"
+  }
+}
 ```
+On execution the command above will become `node ./cd/deploy.js --version v1.2.3`.
 
-### Command Line Flags
-The level of the commit must be specified as the first argument. Like `major`, `beta`, etc. You can view the list of available levels by executing help command:
+List of template literals:
+
+| gitRemote        | Remote push url that read from git.              |
+|------------------|--------------------------------------------------|
+| gitRemote        | Push url read from git.                          |
+| gitRemoteService | It is "github" or "gitlab"                       |
+| gitBranch        | The name of the git branch such as "main"        |
+| tag              | Full version tag including prefix such as v1.2.3 |
+| abbrCommitHash   | Short version of the full commit hash.           |
+
+
+List of template literals based on the hook:
+
+| Hook         | Description                                                                                                    | Template Literals                                             |
+|--------------|----------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| beforeCommit | Executed just before committing.                                                                               | `gitRemote, gitRemoteService, gitBranch, tag`                 |
+| afterCommit  | Executed after committing and tagging.                                                                         | `gitRemote, gitRemoteService, gitBranch, tag, abbrCommitHash` |
+| beforePush   | Executed just before pushing to remote. (No difference with afterCommit but useful if you use `releaser push`) | `gitRemote, gitRemoteService, gitBranch, tag`                 |
+| afterPush    | Executed after pushing to remote.                                                                              | `gitRemote, gitRemoteService, gitBranch, tag`                 |
+
+
+## Command Line Interface
+You can list all the commands and the options by adding `--help` to them.
 ```sh
 releaser --help
 ```
-Some of them applies to semver, some to calver and some to both.
 
-To ignore the searching for the current version in git history you can specify it to calculate the next version:
-```sh
-releaser major -m "initial release." --current-tag v3.0.0
-```
-
-## Default Plugins
-1. **Github**: Github plugin is for creating releases on Github.
-2. **Gitlab**: Gitlab plugin is for creating releases on Gitlab.
-3. **npm**: Npm plugin can keep the version field in package.json up to date and responsible for publishing packages thorugh npm.
-4. **Docker**: Docker plugin is for building and pushing docker images to some container registry.
-5. **cmd**: Command plugin is for executing shell commands before or after running pushing code changes to the remote.
-
-## Plugin Development
-A template for a plugin:
-```js
-function myplugin() {
-  async function initiated() {
-    // triggered when config is ready
-  }
-
-  async function beforePush(nextTag) {
-    // triggered when the next version computed
-  }
-
-  async function afterPush(tag, changelog) {
-    // triggered when after git push
-  }
-
-  return {
-    initiated: initiated,
-    beforePush: beforePush,
-    afterPush: afterPush
-  }
-}
-
-module.exports = myplugin()
-```
-This is a minimal setup. All methods have the same special context which is accessible with `this`:
-```js
-async function beforePush(nextTag) {
-  // triggered when the next version computed
-
-  // context:
-  console.log(
-    // you can access all config props. this.config.get('github.token') for example
-    this.config,
-    // a function that returns unprefixed version number. Without "v" for example.
-    this.getBareVersion,
-    // a function that return prefixed version number.
-    this.prefixTag,
-    // an object which reads repository data and has some methods. refer to src/modules/git
-    this.git,
-    // an object that has one method which is generateNextTag
-    this.versioning
-  )
-}
-```
-
-### Activating Plugin
-Enable and specify the path of the plugin in `.releaser.json`:
-```json
-{
-  "myplugin": {
-    "enable": true,
-    "path": "./devops/releaser-plugins/myplugin.js",
-    "someOtherOption": "yes"
-  }
-}
-```
-Run the releaser as usual, that's all.
+## Contributing
+Fork, make changes, test and make a pull request. Take a look at the `.test.env.example` file reference for `.test.env`. You can't run tests without filling the `.test.env` file.
 
 ---
 

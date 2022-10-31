@@ -1,13 +1,14 @@
 {
   "name": "node-releaser",
   "version": "v1.0.2",
-  "description": "Automated versioning and package publishing tool. Supports semver and calver. Extendible with plugins.",
+  "description": "Software versioning, releasing and publishing tool.",
   "main": "src/index.js",
+  "type": "module",
   "bin": {
-    "releaser": "./src/cli.js"
+    "releaser": "./cli/index.js"
   },
   "scripts": {
-    "test": "for i in tests/*.js; do node \"$i\"; done"
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -38,15 +39,21 @@
   },
   "homepage": "https://github.com/muratgozel/node-releaser#readme",
   "dependencies": {
+    "ajv": "^8.11.0",
     "calver": "^22.8.3",
-    "colors": "^1.4.0",
+    "chalk": "^5.1.2",
+    "commander": "^9.4.1",
     "convict": "^6.2.1",
     "got": "^12.5.2",
+    "lodash": "^4.17.21",
     "octokit": "^2.0.9",
-    "semver": "^7.3.5",
-    "yargs": "^17.1.1"
+    "ora": "^6.1.2",
+    "prompts": "^2.4.2",
+    "semver": "^7.3.5"
   },
   "devDependencies": {
+    "dotenv": "^16.0.3",
+    "jasmine": "^4.4.0",
     "node-releaser": "^1.0.1"
   }
 }
