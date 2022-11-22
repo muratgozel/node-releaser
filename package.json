@@ -1,6 +1,6 @@
 {
   "name": "node-releaser",
-  "version": "v2.0.0-beta.1",
+  "version": "v2.0.0-beta.2",
   "description": "Software versioning, releasing and publishing tool.",
   "main": "src/index.js",
   "type": "module",
@@ -54,6 +54,6 @@
   "devDependencies": {
     "dotenv": "^16.0.3",
     "jasmine": "^4.4.0",
-    "node-releaser": "^1.0.1"
+    "node-releaser": "^2.0.0-beta.1"
   }
 }

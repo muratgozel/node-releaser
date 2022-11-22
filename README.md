@@ -11,6 +11,8 @@ Software versioning, releasing and publishing tool.
 4. Auto-publishes your docker containers as you release.
 5. Interactive cli with `--non-interactive` option.
 
+![Sample output of check command.](assets/releaser-check.gif)
+
 ## Install
 ```sh
 # install globally
@@ -33,6 +35,8 @@ In any git based project, run:
 releaser release -l patch -m "fix: something" -m "feat: a new feature."
 ```
 This command validates your codebase first, runs interactive configuration wizard if there is no configuration defined, commit+tag+push your changes and calls relevant hooks while doing all of this.
+
+![Sample output of release command.](assets/releaser-release.gif)
 
 It checks project's git history, git remotes, package.json and Dockerfile to offer you the essential functionality such as generating next versions, publishing npm package versions, creating releases on Github or Gitlab, pushing container images to a docker registry.
 
@@ -146,7 +150,7 @@ On execution the command above will become `node ./cd/deploy.js --version v1.2.3
 
 List of template literals:
 
-| gitRemote        | Remote push url that read from git.              |
+| Template Literal | Description                                      |
 |------------------|--------------------------------------------------|
 | gitRemote        | Push url read from git.                          |
 | gitRemoteService | It is "github" or "gitlab"                       |
@@ -170,6 +174,8 @@ You can list all the commands and the options by adding `--help` to them.
 ```sh
 releaser --help
 ```
+
+![Sample output of help command.](assets/releaser-help.gif)
 
 ## Contributing
 Fork, make changes, test and make a pull request. Take a look at the `.test.env.example` file reference for `.test.env`. You can't run tests without filling the `.test.env` file.
