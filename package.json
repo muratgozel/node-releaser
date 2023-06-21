@@ -1,6 +1,6 @@
 {
   "name": "node-releaser",
-  "version": "v2.1.1",
+  "version": "v2.1.2",
   "description": "Software versioning, releasing and publishing tool.",
   "main": "src/index.js",
   "type": "module",
