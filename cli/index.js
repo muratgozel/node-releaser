@@ -62,7 +62,6 @@ program.command('push')
   .option('-a, --auto-configure', 'Creates configuration file automatically by looking at the codebase, this option disables any user input in check phase.', false)
   .option('-p, --project-path <path>', 'Specify different project path. It is where command executed by default.')
   .option('--prefer-config <loc>', 'Preferred location for the releaser config, only taken into account with auto-configure', '.releaser.json')
-  .option('-ne, --no-events', 'Do not trigger any events such as github/npm/docker releases.', false)
   .hook('preAction', preAction)
   .action(push)
 

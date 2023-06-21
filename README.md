@@ -32,7 +32,7 @@ npx releaser [command] [options]
 ## Quickstart
 In any git based project, run:
 ```sh
-releaser release -l patch -m "fix: something" -m "feat: a new feature."
+releaser release -l patch -m "fixed something" -m "fixed something else"
 ```
 This command validates your codebase first, runs interactive configuration wizard if there is no configuration defined, commit+tag+push your changes and calls relevant hooks while doing all of this.
 
@@ -178,7 +178,7 @@ releaser --help
 ![Sample output of help command.](assets/releaser-help.gif)
 
 ## Contributing
-If you're interested in contributing, read the [CONTRIBUTING.md](muratgozel/CONTRIBUTING.md) first, please.
+If you're interested in contributing, read the [CONTRIBUTING.md](muratgozel/muratgozel/CONTRIBUTING.md) first, please.
 
 ---
 
