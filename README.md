@@ -178,7 +178,7 @@ releaser --help
 ![Sample output of help command.](assets/releaser-help.gif)
 
 ## Contributing
-Fork, make changes, test and make a pull request. Take a look at the `.test.env.example` file reference for `.test.env`. You can't run tests without filling the `.test.env` file.
+If you're interested in contributing, read the [CONTRIBUTING.md](muratgozel/CONTRIBUTING.md) first, please.
 
 ---
 
@@ -188,4 +188,4 @@ Version management of this repository done by [releaser](https://github.com/mura
 
 Thanks for watching 🐬
 
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F1RFO7)
+[![ko-fi](https://cdn.muratgozel.com.tr/support-me-on-patreon.v1.png)](https://patreon.com/muratgozel?utm_medium=organic&utm_source=github_repo&utm_campaign=github&utm_content=join_link)

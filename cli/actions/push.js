@@ -48,7 +48,7 @@ export default async function push(opts, command) {
     }
   }
 
-  await events.emit('beforePush')
+  if (!opts.noEvents) await events.emit('beforePush')
 
   if (!spinner) spinner = ora({text: `Pushing changes`, color: 'cyan', indent: 2}).start()
   else spinner.start(`Pushing changes`)
@@ -59,5 +59,5 @@ export default async function push(opts, command) {
   }
   spinner.succeed(`Pushing changes`)
 
-  await events.emit('afterPush')
+  if (!opts.noEvents) await events.emit('afterPush')
 }

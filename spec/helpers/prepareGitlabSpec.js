@@ -4,7 +4,7 @@ import path from "node:path";
 import * as dotenv from 'dotenv';
 import got from "got";
 
-dotenv.config({path: path.resolve(process.cwd(), '.test.env')});
+dotenv.config({path: path.resolve(process.cwd(), '.env')});
 
 (function(env) {
   const resolvedRemoteUrl = resolveRemoteUrl(process.env.GITLAB_REPO)

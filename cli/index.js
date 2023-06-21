@@ -5,7 +5,6 @@ import path from "node:path";
 import {fileURLToPath} from 'node:url';
 import {Command} from "commander";
 import {config} from "../lib/infrastructure/config.js";
-// import pkg from "../package.json" assert {type: "json"};
 import check from "./actions/check.js";
 import commit from "./actions/commit.js";
 import push from "./actions/push.js";
@@ -63,6 +62,7 @@ program.command('push')
   .option('-a, --auto-configure', 'Creates configuration file automatically by looking at the codebase, this option disables any user input in check phase.', false)
   .option('-p, --project-path <path>', 'Specify different project path. It is where command executed by default.')
   .option('--prefer-config <loc>', 'Preferred location for the releaser config, only taken into account with auto-configure', '.releaser.json')
+  .option('-ne, --no-events', 'Do not trigger any events such as github/npm/docker releases.', false)
   .hook('preAction', preAction)
   .action(push)
 
@@ -77,6 +77,7 @@ program.command('release')
   .option('--initial-release', 'Force releaser to treat this as initial release.', false)
   .hook('preAction', preAction)
   .action(release)
+
 /*
 program.command('docker')
   .description('Builds and pushes the container to a docker registry.')
@@ -87,4 +88,5 @@ program.command('docker')
   .hook('preAction', preAction)
   .action(docker)
 */
+
 await program.parseAsync(process.argv)
