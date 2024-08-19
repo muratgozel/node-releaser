@@ -2,7 +2,7 @@ import {spawn} from 'node:child_process';
 import {writeFile, rm, readFile} from "node:fs/promises";
 import path from "node:path";
 import * as dotenv from 'dotenv';
-import {Octokit} from "octokit";
+import got from "got";
 
 dotenv.config({path: path.resolve(process.cwd(), '.env')});
 
@@ -12,10 +12,6 @@ dotenv.config({path: path.resolve(process.cwd(), '.env')});
 
   env.githubProjectPath = path.join(githubDataPath, resolvedRemoteUrl.repo)
   env.timestamp = Date.now().toString()
-
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-  })
 
   async function prepareGithubSpec() {
     await fetchRepo()
@@ -48,12 +44,17 @@ dotenv.config({path: path.resolve(process.cwd(), '.env')});
   }
 
   async function verifyRelease() {
-    const {data} = await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
-      owner: resolvedRemoteUrl.owner,
-      repo: resolvedRemoteUrl.repo
+    const response = await got({
+      method: 'GET',
+      url: `https://api.github.com/repos/${resolvedRemoteUrl.owner}/${resolvedRemoteUrl.repo}/releases/latest`,
+      headers: {
+        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
     })
 
-    return data.body
+    return JSON.parse(response.rawBody.toString()).body
   }
 
   async function verifyReleaserConfig(location) {
